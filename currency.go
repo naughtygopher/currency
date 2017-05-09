@@ -48,15 +48,6 @@ type Currency struct {
 	magnitude float64
 }
 
-// round rounds off the float value to the configured precision and returns an integer.
-func round(f float64, magnitude float64) int {
-	if math.Abs(f) < 0.5 {
-		return 0
-	}
-
-	return int(f + math.Copysign(magnitude, f))
-}
-
 // New returns a new instance of currency.
 func New(main int, fractional int, code, symbol, funame string, fushare uint) (*Currency, error) {
 	if fushare == 0 {
@@ -72,7 +63,7 @@ func New(main int, fractional int, code, symbol, funame string, fushare uint) (*
 	m := main + (fractional / fus)
 	f := fractional % fus
 
-	fudigits := len(strconv.Itoa(fus - 1))
+	fudigits := digits(fus - 1)
 
 	mag := float64(5.0)
 
@@ -107,7 +98,7 @@ func NewFractional(ftotal int, code, symbol, funame string, fushare uint) (*Curr
 		f = -f
 	}
 
-	fudigits := len(strconv.Itoa(fus - 1))
+	fudigits := digits(fus - 1)
 
 	mag := float64(5.0)
 
@@ -300,4 +291,30 @@ func (c *Currency) String(prefixSymbol bool) string {
 	}
 
 	return str
+}
+
+// round rounds off the float value to the configured precision and returns an integer.
+func round(f float64, magnitude float64) int {
+	if math.Abs(f) < 0.5 {
+		return 0
+	}
+
+	return int(f + math.Copysign(magnitude, f))
+}
+
+// digits returns the number of digits in an integer
+func digits(n int) int {
+	if n < 0 {
+		n = -n
+	}
+
+	n /= 10
+	d := 1
+
+	for n > 0 {
+		d++
+		n /= 10
+	}
+
+	return d
 }

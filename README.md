@@ -75,18 +75,18 @@ How to run?
 Results when run on a MacBook Pro (13-inch, Early 2015), CPU: 2.7 GHz Intel Core i5, RAM: 8 GB 1867 MHz DDR3, Graphics: Intel Iris Graphics 6100 1536 MB
 
 ```
-BenchmarkNew-4                    	20000000	       108 ns/op
-BenchmarkNewFractional-4          	20000000	       108 ns/op
-BenchmarkParseString-4            	 2000000	       953 ns/op
-BenchmarkParseFloat64-4           	10000000	       133 ns/op
+BenchmarkNew-4                    	20000000	        70.3 ns/op
+BenchmarkNewFractional-4          	20000000	        73.0 ns/op
+BenchmarkParseString-4            	 2000000	       918 ns/op
+BenchmarkParseFloat64-4           	10000000	       135 ns/op
 BenchmarkFractionalTotal-4        	2000000000	         0.35 ns/op
-BenchmarkUpdateWithFractional-4   	100000000	        10.8 ns/op
-BenchmarkAdd-4                    	100000000	        21.6 ns/op
+BenchmarkUpdateWithFractional-4   	100000000	        10.9 ns/op
+BenchmarkAdd-4                    	100000000	        22.3 ns/op
 BenchmarkSubtract-4               	100000000	        22.7 ns/op
 BenchmarkMultiply-4               	100000000	        17.0 ns/op
-BenchmarkMultiplyFloat64-4        	50000000	        32.0 ns/op
-BenchmarkPercent-4                	20000000	        70.6 ns/op
-BenchmarkString-4                 	10000000	       225 ns/op
-BenchmarkStringNoPrefix-4         	10000000	       175 ns/op
-BenchmarkFloat64-4                	2000000000	         0.35 ns/op
+BenchmarkMultiplyFloat64-4        	50000000	        31.6 ns/op
+BenchmarkPercent-4                	20000000	        69.9 ns/op
+BenchmarkString-4                 	10000000	       227 ns/op
+BenchmarkStringNoPrefix-4         	10000000	       176 ns/op
+BenchmarkFloat64-4                	2000000000	         0.36 ns/op
 ```
