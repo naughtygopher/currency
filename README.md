@@ -44,8 +44,10 @@ Fractional unit can be negative only when the main value is 0. If the main value
 
 ### Parsers
 
-1. `ParseStr(value string, code, symbol string,  fulabel string, fushare uint)` returns a currency struct instance, given a currency value represented as string
-2. `ParseFloat64(value float64, code, symbol string, funame string, fushare uint)` returns a 
+1. `New(main int, fractional int, symbol string,  fulabel string, fushare uint)` returns a currency struct instance, given a currency value represented by main and fractional unit
+2. `New(fractional int, symbol string,  fulabel string, fushare uint)` returns a currency struct instance, given a currency's total value represented by the fractional unit
+3. `ParseStr(value string, code, symbol string,  fulabel string, fushare uint)` returns a currency struct instance, given a currency value represented as string
+4. `ParseFloat64(value float64, code, symbol string, funame string, fushare uint)` returns a 
 currency struct instance, given a currency value represented in float64
 
 ### Following computations are supported
@@ -74,14 +76,18 @@ How to run?
 Results when run on a MacBook Pro (13-inch, Early 2015), CPU: 2.7 GHz Intel Core i5, RAM: 8 GB 1867 MHz DDR3, Graphics: Intel Iris Graphics 6100 1536 MB
 
 ```
-BenchmarkNew-4              	10000000	       113 ns/op
-BenchmarkAdd-4              	100000000	        22.8 ns/op
-BenchmarkSub-4              	100000000	        23.3 ns/op
-BenchmarkMult-4             	100000000	        16.9 ns/op
-BenchmarkMultFloat64-4      	50000000	        31.5 ns/op
-BenchmarkFracTotal-4        	2000000000	         0.36 ns/op
-BenchmarkUpdateWithFrac-4   	100000000	        11.0 ns/op
-BenchmarkPercent-4          	20000000	        95.3 ns/op
-BenchmarkFloat64-4          	2000000000	         0.40 ns/op
-BenchmarkString-4           	 5000000	       248 ns/op
+BenchmarkNew-4                    	20000000	       107 ns/op
+BenchmarkNewFractional-4          	20000000	       108 ns/op
+BenchmarkParseString-4            	 2000000	       968 ns/op
+BenchmarkParseFloat64-4           	10000000	       131 ns/op
+BenchmarkAdd-4                    	100000000	        22.3 ns/op
+BenchmarkSubtract-4               	100000000	        22.2 ns/op
+BenchmarkMultiply-4               	100000000	        17.2 ns/op
+BenchmarkMultiplyFloat64-4        	50000000	        31.4 ns/op
+BenchmarkFractionalTotal-4        	2000000000	         0.36 ns/op
+BenchmarkUpdateWithFractional-4   	100000000	        10.9 ns/op
+BenchmarkPercent-4                	20000000	        70.6 ns/op
+BenchmarkFloat64-4                	2000000000	         0.35 ns/op
+BenchmarkString-4                 	10000000	       224 ns/op
+BenchmarkStringNoPrefix-4         	10000000	       176 ns/op
 ```

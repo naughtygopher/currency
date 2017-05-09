@@ -8,6 +8,24 @@ func BenchmarkNew(t *testing.B) {
 	}
 }
 
+func BenchmarkNewFractional(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		NewFractional(1005, "INR", "₹", "paise", 100)
+	}
+}
+
+func BenchmarkParseString(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ParseString("10.05", "INR", "₹", "paise", 100)
+	}
+}
+
+func BenchmarkParseFloat64(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ParseFloat64(10.05, "INR", "₹", "paise", 100)
+	}
+}
+
 func BenchmarkAdd(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
@@ -17,7 +35,7 @@ func BenchmarkAdd(t *testing.B) {
 	}
 }
 
-func BenchmarkSub(t *testing.B) {
+func BenchmarkSubtract(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
 
@@ -26,7 +44,7 @@ func BenchmarkSub(t *testing.B) {
 	}
 }
 
-func BenchmarkMult(t *testing.B) {
+func BenchmarkMultiply(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -34,7 +52,7 @@ func BenchmarkMult(t *testing.B) {
 	}
 }
 
-func BenchmarkMultFloat64(t *testing.B) {
+func BenchmarkMultiplyFloat64(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -42,7 +60,7 @@ func BenchmarkMultFloat64(t *testing.B) {
 	}
 }
 
-func BenchmarkFracTotal(t *testing.B) {
+func BenchmarkFractionalTotal(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -50,7 +68,7 @@ func BenchmarkFracTotal(t *testing.B) {
 	}
 }
 
-func BenchmarkUpdateWithFrac(t *testing.B) {
+func BenchmarkUpdateWithFractional(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -84,17 +102,5 @@ func BenchmarkStringNoPrefix(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
 		cur1.String(false)
-	}
-}
-
-func BenchmarkParseString(t *testing.B) {
-	for i := 0; i < t.N; i++ {
-		ParseString("10.05", "INR", "₹", "paise", 100)
-	}
-}
-
-func BenchmarkParseFloat64(t *testing.B) {
-	for i := 0; i < t.N; i++ {
-		ParseFloat64(10.05, "INR", "₹", "paise", 100)
 	}
 }
