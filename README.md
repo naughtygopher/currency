@@ -1,4 +1,4 @@
-## Currency & Taxation
+## Currency
 
 Currency is a simple library to handle currency/accounts computations and taxation. A currency can be configured by setting the following values in the `Currency` struct. In most cases, a currency would have 2 units, 1 main unit and another fractional/sub unit.
 
