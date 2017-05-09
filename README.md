@@ -74,14 +74,14 @@ How to run?
 Results when run on a MacBook Pro (13-inch, Early 2015), CPU: 2.7 GHz Intel Core i5, RAM: 8 GB 1867 MHz DDR3, Graphics: Intel Iris Graphics 6100 1536 MB
 
 ```
-BenchmarkNewCurrency-4              	10000000	       113 ns/op
-BenchmarkCurrencyAdd-4              	100000000	        22.8 ns/op
-BenchmarkCurrencySub-4              	100000000	        23.3 ns/op
-BenchmarkCurrencyMult-4             	100000000	        16.9 ns/op
-BenchmarkCurrencyMultFloat64-4      	50000000	        31.5 ns/op
-BenchmarkCurrencyFracTotal-4        	2000000000	         0.36 ns/op
-BenchmarkCurrencyUpdateWithFrac-4   	100000000	        11.0 ns/op
-BenchmarkCurrencyPercent-4          	20000000	        95.3 ns/op
-BenchmarkCurrencyFloat64-4          	2000000000	         0.40 ns/op
-BenchmarkCurrencyString-4           	 5000000	       248 ns/op
+BenchmarkNew-4              	10000000	       113 ns/op
+BenchmarkAdd-4              	100000000	        22.8 ns/op
+BenchmarkSub-4              	100000000	        23.3 ns/op
+BenchmarkMult-4             	100000000	        16.9 ns/op
+BenchmarkMultFloat64-4      	50000000	        31.5 ns/op
+BenchmarkFracTotal-4        	2000000000	         0.36 ns/op
+BenchmarkUpdateWithFrac-4   	100000000	        11.0 ns/op
+BenchmarkPercent-4          	20000000	        95.3 ns/op
+BenchmarkFloat64-4          	2000000000	         0.40 ns/op
+BenchmarkString-4           	 5000000	       248 ns/op
 ```

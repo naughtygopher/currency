@@ -2,13 +2,13 @@ package currency
 
 import "testing"
 
-func BenchmarkNewCurrency(t *testing.B) {
+func BenchmarkNew(t *testing.B) {
 	for i := 0; i < t.N; i++ {
 		New(10, 5, "INR", "₹", "paise", 100)
 	}
 }
 
-func BenchmarkCurrencyAdd(t *testing.B) {
+func BenchmarkAdd(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
 
@@ -17,7 +17,7 @@ func BenchmarkCurrencyAdd(t *testing.B) {
 	}
 }
 
-func BenchmarkCurrencySub(t *testing.B) {
+func BenchmarkSub(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
 
@@ -26,7 +26,7 @@ func BenchmarkCurrencySub(t *testing.B) {
 	}
 }
 
-func BenchmarkCurrencyMult(t *testing.B) {
+func BenchmarkMult(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -34,7 +34,7 @@ func BenchmarkCurrencyMult(t *testing.B) {
 	}
 }
 
-func BenchmarkCurrencyMultFloat64(t *testing.B) {
+func BenchmarkMultFloat64(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -42,7 +42,7 @@ func BenchmarkCurrencyMultFloat64(t *testing.B) {
 	}
 }
 
-func BenchmarkCurrencyFracTotal(t *testing.B) {
+func BenchmarkFracTotal(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -50,7 +50,7 @@ func BenchmarkCurrencyFracTotal(t *testing.B) {
 	}
 }
 
-func BenchmarkCurrencyUpdateWithFrac(t *testing.B) {
+func BenchmarkUpdateWithFrac(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -58,7 +58,7 @@ func BenchmarkCurrencyUpdateWithFrac(t *testing.B) {
 	}
 }
 
-func BenchmarkCurrencyPercent(t *testing.B) {
+func BenchmarkPercent(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
@@ -66,14 +66,14 @@ func BenchmarkCurrencyPercent(t *testing.B) {
 	}
 }
 
-func BenchmarkCurrencyFloat64(t *testing.B) {
+func BenchmarkFloat64(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
 		cur1.Float64()
 	}
 }
 
-func BenchmarkCurrencyString(t *testing.B) {
+func BenchmarkString(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
 		cur1.String(true)
