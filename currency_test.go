@@ -6,8 +6,19 @@ import (
 )
 
 func TestAdd(t *testing.T) {
-	var cur1, _ = New(10, 99, "INR", "₹", "paise", 100)
-	var cur2, _ = New(10, 99, "INR", "₹", "paise", 100)
+	cur1, err := New(10, 99, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	cur2, err := New(10, 99, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
 
 	cur1.Add(*cur2)
 	if cur1.Main != 21 {
@@ -33,8 +44,19 @@ func TestAdd(t *testing.T) {
 }
 
 func TestAdd2(t *testing.T) {
-	var cur1, _ = New(10, 99, "INR", "₹", "paise", 100)
-	var cur2, _ = New(-10, 99, "INR", "₹", "paise", 100)
+	cur1, err := New(10, 99, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	cur2, err := New(-10, 99, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
 
 	cur1.Add(*cur2)
 
@@ -61,8 +83,19 @@ func TestAdd2(t *testing.T) {
 }
 
 func TestAdd3(t *testing.T) {
-	var cur1, _ = New(-10, 25, "INR", "₹", "paise", 100)
-	var cur2, _ = New(-10, 25, "INR", "₹", "paise", 100)
+	cur1, err := New(-10, 25, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	cur2, err := New(-10, 25, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
 
 	cur1.Add(*cur2)
 	if cur1.Main != -20 {
@@ -88,10 +121,21 @@ func TestAdd3(t *testing.T) {
 }
 
 func TestSub(t *testing.T) {
-	var cur1, _ = New(10, 99, "INR", "₹", "paise", 100)
-	var cur2, _ = New(11, 99, "INR", "₹", "paise", 100)
+	cur1, err := New(10, 99, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
 
-	cur1.Sub(*cur2)
+	cur2, err := New(11, 99, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	cur1.Subtract(*cur2)
 
 	if cur1.Main != -1 {
 		t.Log("Expected -1, got:", cur1.Main)
@@ -116,10 +160,21 @@ func TestSub(t *testing.T) {
 }
 
 func TestSub2(t *testing.T) {
-	var cur1, _ = New(10, 69, "INR", "₹", "paise", 100)
-	var cur2, _ = New(5, 99, "INR", "₹", "paise", 100)
+	cur1, err := New(10, 69, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
 
-	cur1.Sub(*cur2)
+	cur2, err := New(5, 99, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	cur1.Subtract(*cur2)
 
 	if cur1.Main != 4 {
 		t.Log("Expected 4, got:", cur1.Main)
@@ -144,8 +199,14 @@ func TestSub2(t *testing.T) {
 }
 
 func TestMult(t *testing.T) {
-	var cur1, _ = New(10, 50, "INR", "₹", "paise", 100)
-	cur1.Mult(5)
+	cur1, err := New(10, 50, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	cur1.Multiply(5)
 
 	if cur1.Main != 52 {
 		t.Log("Expected 52, got:", cur1.Main)
@@ -170,8 +231,14 @@ func TestMult(t *testing.T) {
 }
 
 func TestMultFloat64(t *testing.T) {
-	var cur1, _ = New(10, 50, "INR", "₹", "paise", 100)
-	cur1.MultFloat64(1.05)
+	cur1, err := New(10, 50, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	cur1.MultiplyFloat64(1.05)
 
 	if cur1.Main != 11 {
 		t.Log("Expected 11, got:", cur1.Main)
@@ -196,7 +263,12 @@ func TestMultFloat64(t *testing.T) {
 }
 
 func TestPercent(t *testing.T) {
-	var cur1, _ = New(10, 50, "INR", "₹", "paise", 100)
+	cur1, err := New(10, 50, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
 
 	cur2 := cur1.Percent(5.25)
 
@@ -223,10 +295,11 @@ func TestPercent(t *testing.T) {
 }
 
 func TestParseStr(t *testing.T) {
-	cur, err := ParseStr("10.5", "INR", "₹", "paise", 100)
+	cur, err := ParseString("10.5", "INR", "₹", "paise", 100)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
+		return
 	}
 
 	if cur.Main != 10 {
@@ -253,10 +326,11 @@ func TestParseStr(t *testing.T) {
 }
 
 func TestParseStr2(t *testing.T) {
-	cur, err := ParseStr("-10.5", "INR", "₹", "paise", 100)
+	cur, err := ParseString("-10.5", "INR", "₹", "paise", 100)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
+		return
 	}
 
 	if cur.Main != -10 {
@@ -277,7 +351,7 @@ func TestParseStr2(t *testing.T) {
 	}
 
 	//parsing with fractional unit alone
-	cur1, err := ParseStr("-0.5", "INR", "₹", "paise", 100)
+	cur1, err := ParseString("-0.5", "INR", "₹", "paise", 100)
 	if err != nil {
 		t.Log(err)
 		t.Fail()
@@ -312,6 +386,7 @@ func TestParseFloat64(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 		t.Fail()
+		return
 	}
 
 	if cur.Main != 10 {
@@ -337,7 +412,12 @@ func TestParseFloat64(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	var cur, _ = New(10, 5, "INR", "₹", "paise", 100)
+	cur, err := New(10, 5, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
 
 	result := cur.String(true)
 	if result != "₹10.05" {
@@ -347,7 +427,13 @@ func TestString(t *testing.T) {
 }
 
 func TestFloat64(t *testing.T) {
-	var cur, _ = New(10, 1, "INR", "₹", "paise", 100)
+	cur, err := New(10, 1, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
 	f := cur.Float64()
 	if f != 10.01 {
 		t.Log("Expected 10.50, got:", f)
