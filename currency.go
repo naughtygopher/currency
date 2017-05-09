@@ -1,4 +1,4 @@
-// Package currency helps represent a currency with high precision, and do currency computations
+// Package currency helps represent a currency with high precision, and do currency computations.
 package currency
 
 import (
@@ -9,14 +9,16 @@ import (
 	"strings"
 )
 
-// ErrUnmatch is the error returned if trying to do computation between unmatched currencies
-var ErrUnmatch = errors.New("Currencies do not match")
+var (
+	// ErrMismatchCurrency is the error returned if trying to do computation between unmatched currencies
+	ErrMismatchCurrency = errors.New("Currencies do not match")
 
-// ErrInvalid is the error returned while trying parse an invalid currency value
-var ErrInvalid = errors.New("Invalid currency value provided")
+	// ErrInvalidCurrency is the error returned while trying parse an invalid currency value
+	ErrInvalidCurrency = errors.New("Invalid currency value provided")
 
-// ErrInvalidFUS is the error returned when Functional unit share is equal to 0
-var ErrInvalidFUS = errors.New("Invalid functional unit share provided")
+	// ErrInvalidFUS is the error returned when Functional unit share is equal to 0
+	ErrInvalidFUS = errors.New("Invalid functional unit share provided")
+)
 
 // replacer is the regex which replaces all invalid characters inside a string representing a currency value
 var replacer = regexp.MustCompile(`([^0-9.\-\+])`)
@@ -25,7 +27,7 @@ const (
 	replaceWith = ""
 )
 
-// Currency represents money with all the meta data required
+// Currency represents money with all the meta data required.
 type Currency struct {
 	// Code represents the international currency code
 	Code string
@@ -46,7 +48,7 @@ type Currency struct {
 	magnitude float64
 }
 
-// round rounds off the float value to the configured precision and returns an integer
+// round rounds off the float value to the configured precision and returns an integer.
 func round(f float64, magnitude float64) int {
 	if math.Abs(f) < 0.5 {
 		return 0
@@ -55,8 +57,8 @@ func round(f float64, magnitude float64) int {
 	return int(f + math.Copysign(magnitude, f))
 }
 
-// New returns a new instance of currency
-func New(main int, fractional int, code, symbol string, funame string, fushare uint) (*Currency, error) {
+// New returns a new instance of currency.
+func New(main int, fractional int, code, symbol, funame string, fushare uint) (*Currency, error) {
 	if fushare == 0 {
 		return nil, ErrInvalidFUS
 	}
@@ -90,8 +92,8 @@ func New(main int, fractional int, code, symbol string, funame string, fushare u
 	}, nil
 }
 
-// NewFractional returns a new instance of currency given the total value of currency in fractional unit
-func NewFractional(ftotal int, code, symbol string, funame string, fushare uint) (*Currency, error) {
+// NewFractional returns a new instance of currency given the total value of currency in fractional unit.
+func NewFractional(ftotal int, code, symbol, funame string, fushare uint) (*Currency, error) {
 	if fushare == 0 {
 		return nil, ErrInvalidFUS
 	}
@@ -125,12 +127,12 @@ func NewFractional(ftotal int, code, symbol string, funame string, fushare uint)
 	}, nil
 }
 
-// ParseString will parse a string representation of the currency and return instance of Currency
-func ParseString(value string, code, symbol string, funame string, fushare uint) (*Currency, error) {
+// ParseString will parse a string representation of the currency and return instance of Currency.
+func ParseString(value string, code, symbol, funame string, fushare uint) (*Currency, error) {
 
 	splits := strings.Split(replacer.ReplaceAllString(value, replaceWith), ".")
 	if len(splits) != 2 {
-		return nil, ErrInvalid
+		return nil, ErrInvalidCurrency
 	}
 
 	mstr := strings.Trim(splits[0], " ")
@@ -159,8 +161,8 @@ func ParseString(value string, code, symbol string, funame string, fushare uint)
 	return New(m, f, code, symbol, funame, fushare)
 }
 
-// ParseFloat64 will parse a float value into currency
-func ParseFloat64(value float64, code, symbol string, funame string, fushare uint) (*Currency, error) {
+// ParseFloat64 will parse a float value into currency.
+func ParseFloat64(value float64, code, symbol, funame string, fushare uint) (*Currency, error) {
 	if fushare == 0 {
 		return nil, ErrInvalidFUS
 	}
@@ -197,7 +199,7 @@ func ParseFloat64(value float64, code, symbol string, funame string, fushare uin
 	}, nil
 }
 
-// FractionalTotal returns the total value in fractional int
+// FractionalTotal returns the total value in fractional int.
 func (c *Currency) FractionalTotal() int {
 	cFrac := c.Fractional
 
@@ -208,7 +210,7 @@ func (c *Currency) FractionalTotal() int {
 	return ((c.Main * int(c.FUShare)) + cFrac)
 }
 
-// UpdateWithFractional will update all the relevant values of currency based on the fractional unit provided
+// UpdateWithFractional will update all the relevant values of currency based on the fractional unit provided.
 func (c *Currency) UpdateWithFractional(frac int) {
 	fus := int(c.FUShare)
 
@@ -220,27 +222,27 @@ func (c *Currency) UpdateWithFractional(frac int) {
 	}
 }
 
-// Add adds the given currency with the base currency
+// Add adds the given currency with the base currency.
 func (c *Currency) Add(acur Currency) error {
 	if c.Code != acur.Code {
-		return ErrUnmatch
+		return ErrMismatchCurrency
 	}
 
 	c.UpdateWithFractional(c.FractionalTotal() + acur.FractionalTotal())
 	return nil
 }
 
-// Subtract subtracts the given currency from the base currency
+// Subtract subtracts the given currency from the base currency.
 func (c *Currency) Subtract(scur Currency) error {
 	if c.Code != scur.Code {
-		return ErrUnmatch
+		return ErrMismatchCurrency
 	}
 
 	c.UpdateWithFractional(c.FractionalTotal() - scur.FractionalTotal())
 	return nil
 }
 
-// Percent returns a new instance of currency which is n percent of c
+// Percent returns a new instance of currency which is n percent of c.
 func (c *Currency) Percent(n float64) *Currency {
 	totalFrac := round(float64(c.FractionalTotal())*(n/100.00), c.magnitude)
 	c1 := *c
@@ -248,18 +250,18 @@ func (c *Currency) Percent(n float64) *Currency {
 	return &c1
 }
 
-// Multiply multiplies the currency by an integer
+// Multiply multiplies the currency by an integer.
 func (c *Currency) Multiply(by int) {
 	c.UpdateWithFractional(c.FractionalTotal() * by)
 }
 
-// MultiplyFloat64 multiplies the currency by a float value
+// MultiplyFloat64 multiplies the currency by a float value.
 func (c *Currency) MultiplyFloat64(by float64) {
 	t := float64(c.FractionalTotal()) * by
 	c.UpdateWithFractional(round(t, c.magnitude))
 }
 
-// Float64 returns the currency in float64 format
+// Float64 returns the currency in float64 format.
 func (c *Currency) Float64() float64 {
 	frac := c.Fractional
 	if c.Main < 0 {
@@ -269,7 +271,7 @@ func (c *Currency) Float64() float64 {
 	return float64(c.Main) + (float64(frac) / float64(c.FUShare))
 }
 
-// String returns the currency represented as string
+// String returns the currency represented as string.
 func (c *Currency) String(prefixSymbol bool) string {
 	frc := c.Fractional
 	if c.Fractional < 0 {

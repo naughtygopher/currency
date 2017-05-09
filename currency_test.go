@@ -4,6 +4,77 @@ import (
 	"testing"
 )
 
+func TestNew(t *testing.T) {
+	cur, err := New(10, 50, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if cur.Main != 10 {
+		t.Log("Expected 10, got:", cur.Main)
+		t.Fail()
+	}
+
+	if cur.Fractional != 50 {
+		t.Log("Expected 50, got:", cur.Fractional)
+		t.Fail()
+	}
+
+	str := cur.String(true)
+	if str != "₹10.50" {
+		t.Log("Expected ₹10.50, got:", str)
+		t.Fail()
+	}
+
+	if cur.Float64() != 10.50 {
+		t.Log("Expected 10.50, got:", cur.Float64())
+		t.Fail()
+	}
+
+}
+
+func BenchmarkNew(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		New(10, 50, "INR", "₹", "paise", 100)
+	}
+}
+
+func TestNewFractional(t *testing.T) {
+	cur, err := NewFractional(1005, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	if cur.Main != 10 {
+		t.Log("Expected 10, got:", cur.Main)
+		t.Fail()
+	}
+
+	if cur.Fractional != 5 {
+		t.Log("Expected 5, got:", cur.Fractional)
+		t.Fail()
+	}
+
+	s := cur.String(true)
+	if s != "₹10.05" {
+		t.Log("Expected ₹10.05, got:", s)
+		t.Fail()
+	}
+
+	if cur.Float64() != 10.05 {
+		t.Log("Expected 10.05, got:", cur.Float64())
+		t.Fail()
+	}
+}
+
+func BenchmarkNewFractional(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		NewFractional(1005, "INR", "₹", "paise", 100)
+	}
+}
+
 func TestParseStr(t *testing.T) {
 	cur, err := ParseString("10.5", "INR", "₹", "paise", 100)
 	if err != nil {
@@ -33,6 +104,12 @@ func TestParseStr(t *testing.T) {
 		t.Fail()
 	}
 
+}
+
+func BenchmarkParseString(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ParseString("10.05", "INR", "₹", "paise", 100)
+	}
 }
 
 func TestParseStr2(t *testing.T) {
@@ -120,13 +197,22 @@ func TestParseFloat64(t *testing.T) {
 		t.Fail()
 	}
 }
+func BenchmarkParseFloat64(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ParseFloat64(10.05, "INR", "₹", "paise", 100)
+	}
+}
 
-func TestNewFractional(t *testing.T) {
-	cur, err := NewFractional(1005, "INR", "₹", "paise", 100)
+func TestFractionalTotal(t *testing.T) {
+	cur, err := New(10, 5, "INR", "₹", "paise", 100)
 	if err != nil {
-		t.Log(err)
+		t.Fatal(err)
+	}
+
+	ftotal := cur.FractionalTotal()
+	if ftotal != 1005 {
+		t.Log("Expected 1005, got:", ftotal)
 		t.Fail()
-		return
 	}
 
 	if cur.Main != 10 {
@@ -148,6 +234,51 @@ func TestNewFractional(t *testing.T) {
 	if cur.Float64() != 10.05 {
 		t.Log("Expected 10.05, got:", cur.Float64())
 		t.Fail()
+	}
+}
+
+func BenchmarkFractionalTotal(t *testing.B) {
+	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
+
+	for i := 0; i < t.N; i++ {
+		cur1.FractionalTotal()
+	}
+}
+
+func TestUpdateWithFractional(t *testing.T) {
+	cur, err := New(1, 0, "INR", "₹", "paise", 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cur.UpdateWithFractional(1005)
+	if cur.Main != 10 {
+		t.Log("Expected 10, got:", cur.Main)
+		t.Fail()
+	}
+
+	if cur.Fractional != 5 {
+		t.Log("Expected 5, got:", cur.Fractional)
+		t.Fail()
+	}
+
+	s := cur.String(true)
+	if s != "₹10.05" {
+		t.Log("Expected ₹10.05, got:", s)
+		t.Fail()
+	}
+
+	if cur.Float64() != 10.05 {
+		t.Log("Expected 10.05, got:", cur.Float64())
+		t.Fail()
+	}
+
+}
+
+func BenchmarkUpdateWithFractional(t *testing.B) {
+	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
+
+	for i := 0; i < t.N; i++ {
+		cur1.UpdateWithFractional(2513)
 	}
 }
 
@@ -186,6 +317,14 @@ func TestAdd(t *testing.T) {
 	if cur1.Float64() != 21.98 {
 		t.Log("Expected 21.98, got:", cur1.Float64())
 		t.Fail()
+	}
+}
+func BenchmarkAdd(t *testing.B) {
+	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
+	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
+
+	for i := 0; i < t.N; i++ {
+		cur1.Add(*cur2)
 	}
 }
 
@@ -266,7 +405,7 @@ func TestAdd3(t *testing.T) {
 	}
 }
 
-func TestSub(t *testing.T) {
+func TestSubtract(t *testing.T) {
 	cur1, err := New(10, 99, "INR", "₹", "paise", 100)
 	if err != nil {
 		t.Log(err)
@@ -302,6 +441,14 @@ func TestSub(t *testing.T) {
 	if cur1.Float64() != -1.00 {
 		t.Log("Expected -1.00, got:", cur1.Float64())
 		t.Fail()
+	}
+}
+func BenchmarkSubtract(t *testing.B) {
+	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
+	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
+
+	for i := 0; i < t.N; i++ {
+		cur1.Subtract(*cur2)
 	}
 }
 
@@ -344,7 +491,7 @@ func TestSub2(t *testing.T) {
 	}
 }
 
-func TestMult(t *testing.T) {
+func TestMultiply(t *testing.T) {
 	cur1, err := New(10, 50, "INR", "₹", "paise", 100)
 	if err != nil {
 		t.Log(err)
@@ -375,8 +522,15 @@ func TestMult(t *testing.T) {
 		t.Fail()
 	}
 }
+func BenchmarkMultiply(t *testing.B) {
+	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
-func TestMultFloat64(t *testing.T) {
+	for i := 0; i < t.N; i++ {
+		cur1.Multiply(2)
+	}
+}
+
+func TestMultiplyFloat64(t *testing.T) {
 	cur1, err := New(10, 50, "INR", "₹", "paise", 100)
 	if err != nil {
 		t.Log(err)
@@ -405,6 +559,14 @@ func TestMultFloat64(t *testing.T) {
 	if cur1.Float64() != 11.03 {
 		t.Log("Expected 11.03, got:", cur1.Float64())
 		t.Fail()
+	}
+}
+
+func BenchmarkMultiplyFloat64(t *testing.B) {
+	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
+
+	for i := 0; i < t.N; i++ {
+		cur1.MultiplyFloat64(1.01)
 	}
 }
 
@@ -440,6 +602,14 @@ func TestPercent(t *testing.T) {
 	}
 }
 
+func BenchmarkPercent(t *testing.B) {
+	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
+
+	for i := 0; i < t.N; i++ {
+		cur1.Percent(12.18)
+	}
+}
+
 func TestString(t *testing.T) {
 	cur, err := New(10, 5, "INR", "₹", "paise", 100)
 	if err != nil {
@@ -455,6 +625,20 @@ func TestString(t *testing.T) {
 	}
 }
 
+func BenchmarkString(t *testing.B) {
+	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
+	for i := 0; i < t.N; i++ {
+		cur1.String(true)
+	}
+}
+
+func BenchmarkStringNoPrefix(t *testing.B) {
+	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
+	for i := 0; i < t.N; i++ {
+		cur1.String(false)
+	}
+}
+
 func TestFloat64(t *testing.T) {
 	cur, err := New(10, 1, "INR", "₹", "paise", 100)
 	if err != nil {
@@ -467,5 +651,12 @@ func TestFloat64(t *testing.T) {
 	if f != 10.01 {
 		t.Log("Expected 10.50, got:", f)
 		t.Fail()
+	}
+}
+
+func BenchmarkFloat64(t *testing.B) {
+	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
+	for i := 0; i < t.N; i++ {
+		cur1.Float64()
 	}
 }
