@@ -1,11 +1,11 @@
 ## Currency
 
-Currency is a simple library to handle currency/accounts computations and taxation. A currency can be configured by setting the following values in the `Currency` struct. In most cases, a currency would have 2 units, 1 main unit and another fractional/sub unit.
+Currency is a simple library to do simple currency computations. A currency can be configured by setting the following values in the `Currency` struct. In most cases, a currency would have 2 units, 1 main unit and another fractional/sub unit.
 
 [Ref 1](https://en.wikipedia.org/wiki/Denomination_(currency)), [Ref 2](https://en.wikipedia.org/wiki/Currency) about currencies.
 [Non-decimal sub unit in currencies are only used by 2 countries today](https://en.wikipedia.org/wiki/Non-decimal_currency). Even these are getting phased out.
 
-*This library does not support sub units which are not a power of 10.*
+*This library does not support sub units which are not a power of 10. Nor does it support currencies with more than 1 sub unit*
 
 A currency is represented as/configured using the following struct
 
@@ -15,10 +15,10 @@ type Currency struct {
 	Code string
 	//Symbol is the respective currency symbol
 	Symbol string
-	//Decimal represents the main value of the currency
-	Decimal int
-	//Precision represents the fractional/sub unit of the currency
-	Precision uint
+	//Main represents the main value of the currency
+	Main int
+	//Fractional represents the fractional/sub unit of the currency
+	Fractional uint
 	//FUName is the name of the fractional/sub unit of the currency. e.g. paise
 	FUName string
 	//FUShare represents the no.of fractional/sub units that make up 1 main unit. e.g. ₹1 = 100 paise
