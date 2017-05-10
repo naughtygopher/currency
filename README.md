@@ -64,12 +64,14 @@ Computation is supported only between same type of currencies (i.e. currency cod
 9. `c1.Percent(n float64) currency` returns a new currency instance which is n % of c1
 10. `c1.Divide(n int, retain bool)[]currency, ok ` returns a slice of currency of size n. `ok` if returned as `true` means the currency value was perfectly divisible by n.
 
-Why does division return a slice of currencies?
+#### Why does `Divide(n int, retain bool)` return a slice of currencies?
 
 Division unlike other operations, cannot be rounded. If it is rounded, it would result in currency peddling.
 
 e.g. ₹1/- is to be divided by 3. There are 2 options of dividing this by 3.
+
 	1. Set 33 paise per split, and retain the remaining 1 paise at source. (`Divide(n, true)`)
+
 	2. Set 1 of the split with an extra value, i.e. 34 + 33 + 33. (`Divide(n, false)`)
 
 ### Multiple currency representations
