@@ -120,36 +120,13 @@ func NewFractional(ftotal int, code, symbol, funame string, fushare uint) (*Curr
 
 // ParseString will parse a string representation of the currency and return instance of Currency.
 func ParseString(value string, code, symbol, funame string, fushare uint) (*Currency, error) {
-
-	splits := strings.Split(replacer.ReplaceAllString(value, replaceWith), ".")
-	if len(splits) != 2 {
-		return nil, ErrInvalidCurrency
-	}
-
-	mstr := strings.Trim(splits[0], " ")
-	fstr := strings.Trim(splits[1], " ")
-
-	m, err := strconv.Atoi(mstr)
+	str := replacer.ReplaceAllString(value, replaceWith)
+	f, err := strconv.ParseFloat(str, 64)
 	if err != nil {
 		return nil, err
 	}
 
-	f, err := strconv.Atoi(fstr)
-	if err != nil {
-		return nil, err
-	}
-
-	mpr := len(strconv.Itoa(int(fushare-1))) - len(fstr)
-
-	for i := 0; i < mpr; i++ {
-		f *= 10
-	}
-
-	if m == 0 && string(mstr[0]) == "-" {
-		f = -f
-	}
-
-	return New(m, f, code, symbol, funame, fushare)
+	return ParseFloat64(f, code, symbol, funame, fushare)
 }
 
 // ParseFloat64 will parse a float value into currency.
@@ -159,7 +136,7 @@ func ParseFloat64(value float64, code, symbol, funame string, fushare uint) (*Cu
 	}
 
 	fus := int(fushare)
-	fudigits := len(strconv.Itoa(fus - 1))
+	fudigits := digits(fus - 1)
 
 	mag := float64(5.0)
 	for i := 0; i < fudigits-1; i++ {
@@ -199,57 +176,6 @@ func (c *Currency) FractionalTotal() int {
 	}
 
 	return ((c.Main * int(c.FUShare)) + cFrac)
-}
-
-// UpdateWithFractional will update all the relevant values of currency based on the fractional unit provided.
-func (c *Currency) UpdateWithFractional(frac int) {
-	fus := int(c.FUShare)
-
-	c.Main = (frac / fus)
-	c.Fractional = (frac % fus)
-
-	if c.Main < 0 {
-		c.Fractional = -c.Fractional
-	}
-}
-
-// Add adds the given currency with the base currency.
-func (c *Currency) Add(acur Currency) error {
-	if c.Code != acur.Code {
-		return ErrMismatchCurrency
-	}
-
-	c.UpdateWithFractional(c.FractionalTotal() + acur.FractionalTotal())
-	return nil
-}
-
-// Subtract subtracts the given currency from the base currency.
-func (c *Currency) Subtract(scur Currency) error {
-	if c.Code != scur.Code {
-		return ErrMismatchCurrency
-	}
-
-	c.UpdateWithFractional(c.FractionalTotal() - scur.FractionalTotal())
-	return nil
-}
-
-// Percent returns a new instance of currency which is n percent of c.
-func (c *Currency) Percent(n float64) *Currency {
-	totalFrac := round(float64(c.FractionalTotal())*(n/100.00), c.magnitude)
-	c1 := *c
-	c1.UpdateWithFractional(totalFrac)
-	return &c1
-}
-
-// Multiply multiplies the currency by an integer.
-func (c *Currency) Multiply(by int) {
-	c.UpdateWithFractional(c.FractionalTotal() * by)
-}
-
-// MultiplyFloat64 multiplies the currency by a float value.
-func (c *Currency) MultiplyFloat64(by float64) {
-	t := float64(c.FractionalTotal()) * by
-	c.UpdateWithFractional(round(t, c.magnitude))
 }
 
 // Float64 returns the currency in float64 format.

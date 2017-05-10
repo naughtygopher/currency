@@ -54,12 +54,23 @@ Fractional unit can be negative only when the main value is 0. If the main value
 Computation is supported only between same type of currencies (i.e. currency codes are same)
 
 1. `c1.Add(c2 currency)` add c2 to c1, and update c1
-2. `c1.Subtract(c2 currency)` subtract c2 from c1, and update c1
-3. `c1.Multiply(n int)` multiply c1 by n, where n is an integer
-4. `c1.MultiplyFloat64(n float64)` multiply c1 by n, where n is a float64 value
-5. `c1.UpdateWithFractional(ftotal int)` would update the curreny's respective value, where ftotal is the total value of the currency in its fractional unit. e.g. INR, `UpdateWithFractional(100)` would set the main value as `1` and fractional unit as `0`
-6. `c1.FractionalTotal() int` returns the total value of the currency in its fractional unit. e.g. INR, if the Main value is `1` and fractional unit is `0`, it would return `100`, i.e. 100 paise
-7. `c1.Percent(n float64) currency` returns a new currency instance which is n % of c1
+2. `c1.AddInt(main int, fractional int)` add the currency equivalent of the main & fractional int to c1
+3. `c1.Subtract(c2 currency)` subtract c2 from c1, and update c1
+4. `c1.SubtractIn(main int, fractional int)` subtract the currency equivalent of the main & fractional int from c1
+5. `c1.Multiply(n int)` multiply c1 by n, where n is an integer
+6. `c1.MultiplyFloat64(n float64)` multiply c1 by n, where n is a float64 value
+7. `c1.UpdateWithFractional(ftotal int)` would update the curreny's respective value, where ftotal is the total value of the currency in its fractional unit. e.g. INR, `UpdateWithFractional(100)` would set the main value as `1` and fractional unit as `0`
+8. `c1.FractionalTotal() int` returns the total value of the currency in its fractional unit. e.g. INR, if the Main value is `1` and fractional unit is `0`, it would return `100`, i.e. 100 paise
+9. `c1.Percent(n float64) currency` returns a new currency instance which is n % of c1
+10. `c1.Divide(n int, retain bool)[]currency, ok ` returns a slice of currency of size n. `ok` if returned as `true` means the currency value was perfectly divisible by n.
+
+Why does division return a slice of currencies?
+
+Division unlike other operations, cannot be rounded. If it is rounded, it would result in currency peddling.
+
+e.g. ₹1/- is to be divided by 3. There are 2 options of dividing this by 3.
+	1. Set 33 paise per split, and retain the remaining 1 paise at source. (`Divide(n, true)`)
+	2. Set 1 of the split with an extra value, i.e. 34 + 33 + 33. (`Divide(n, false)`)
 
 ### Multiple currency representations
 
@@ -75,18 +86,21 @@ How to run?
 Results when run on a MacBook Pro (13-inch, Early 2015), CPU: 2.7 GHz Intel Core i5, RAM: 8 GB 1867 MHz DDR3, Graphics: Intel Iris Graphics 6100 1536 MB
 
 ```
-BenchmarkNew-4                    	20000000	        70.3 ns/op
-BenchmarkNewFractional-4          	20000000	        73.0 ns/op
-BenchmarkParseString-4            	 2000000	       918 ns/op
-BenchmarkParseFloat64-4           	10000000	       135 ns/op
-BenchmarkFractionalTotal-4        	2000000000	         0.35 ns/op
-BenchmarkUpdateWithFractional-4   	100000000	        10.9 ns/op
-BenchmarkAdd-4                    	100000000	        22.3 ns/op
-BenchmarkSubtract-4               	100000000	        22.7 ns/op
-BenchmarkMultiply-4               	100000000	        17.0 ns/op
-BenchmarkMultiplyFloat64-4        	50000000	        31.6 ns/op
-BenchmarkPercent-4                	20000000	        69.9 ns/op
-BenchmarkString-4                 	10000000	       227 ns/op
-BenchmarkStringNoPrefix-4         	10000000	       176 ns/op
-BenchmarkFloat64-4                	2000000000	         0.36 ns/op
+BenchmarkNew-4                    	20000000	        67.3 ns/op
+BenchmarkNewFractional-4          	20000000	        65.9 ns/op
+BenchmarkParseFloat64-4           	20000000	        87.4 ns/op
+BenchmarkParseString-4            	 3000000	       544 ns/op
+BenchmarkString-4                 	10000000	       211 ns/op
+BenchmarkStringNoPrefix-4         	10000000	       164 ns/op
+BenchmarkFloat64-4                	2000000000	         0.34 ns/op
+BenchmarkFractionalTotal-4        	2000000000	         0.33 ns/op
+BenchmarkUpdateWithFractional-4   	100000000	        10.3 ns/op
+BenchmarkAdd-4                    	100000000	        20.8 ns/op
+BenchmarkAddInt-4                 	100000000	        18.9 ns/op
+BenchmarkSubtract-4               	100000000	        21.2 ns/op
+BenchmarkSubtractInt-4            	100000000	        18.3 ns/op
+BenchmarkMultiply-4               	100000000	        16.2 ns/op
+BenchmarkMultiplyFloat64-4        	50000000	        30.1 ns/op
+BenchmarkPercent-4                	20000000	        67.1 ns/op
+BenchmarkDivide-4                 	10000000	       155 ns/op
 ```
