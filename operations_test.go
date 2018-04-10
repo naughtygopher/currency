@@ -423,7 +423,7 @@ func TestDivideRetain(t *testing.T) {
 		}
 
 		if split.FractionalTotal() != 33 {
-			t.Log("Expected:", 33, "got:", split.FractionalTotal)
+			t.Log("Expected:", 33, "got:", split.FractionalTotal())
 			t.Fail()
 		}
 	}
@@ -466,7 +466,7 @@ func TestDivideNoRetain(t *testing.T) {
 		}
 
 		if split.FractionalTotal() != 33 && split.FractionalTotal() != 34 {
-			t.Log("Expected:", "33 or 34", "got:", split.FractionalTotal)
+			t.Log("Expected:", "33 or 34", "got:", split.FractionalTotal())
 			t.Fail()
 		}
 	}
