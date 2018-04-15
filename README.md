@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/bnkamalesh/currency.svg?branch=master)](https://travis-ci.org/bnkamalesh/currency)
-[![](https://goreportcard.com/badge/github.com/bnkamalesh/currency)](https://goreportcard.com/report/github.com/bnkamalesh/currency)
 [![](https://cover.run/go/github.com/bnkamalesh/currency.svg?tag=golang-1.10)](https://cover.run/go/github.com/bnkamalesh/currency)
-[![](https://godoc.org/github.com/nathany/looper?status.svg)](https://godoc.org/github.com/bnkamalesh/currency)
+[![](https://goreportcard.com/badge/github.com/bnkamalesh/currency)](https://goreportcard.com/report/github.com/bnkamalesh/currency)
 [![](https://api.codeclimate.com/v1/badges/d181840cf59e912b6c31/maintainability)](https://codeclimate.com/github/bnkamalesh/currency/maintainability)
+[![](https://godoc.org/github.com/nathany/looper?status.svg)](https://godoc.org/github.com/bnkamalesh/currency)
 
 ## Currency
 
