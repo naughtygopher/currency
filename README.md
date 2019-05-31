@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.org/bnkamalesh/currency.svg?branch=master)](https://travis-ci.org/bnkamalesh/currency)
- [![gocover.run](https://gocover.run/github.com/bnkamalesh/currency.svg?style=flat&tag=1.10)](https://gocover.run?tag=1.10&repo=github.com%2Fbnkamalesh%2Fcurrency)
+[![gocover.run](https://gocover.run/github.com/bnkamalesh/currency.svg?style=flat&tag=1.10)](https://gocover.run?tag=1.10&repo=github.com%2Fbnkamalesh%2Fcurrency)
 [![](https://goreportcard.com/badge/github.com/bnkamalesh/currency)](https://goreportcard.com/report/github.com/bnkamalesh/currency)
 [![](https://api.codeclimate.com/v1/badges/d181840cf59e912b6c31/maintainability)](https://codeclimate.com/github/bnkamalesh/currency/maintainability)
 [![](https://godoc.org/github.com/nathany/looper?status.svg)](https://godoc.org/github.com/bnkamalesh/currency)
+[![](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go#financial)
+
 
 ## Currency
 
