@@ -11,13 +11,13 @@ import (
 
 var (
 	// ErrMismatchCurrency is the error returned if trying to do computation between unmatched currencies
-	ErrMismatchCurrency = errors.New("Currencies do not match")
+	ErrMismatchCurrency = errors.New("currencies do not match")
 
 	// ErrInvalidCurrency is the error returned while trying parse an invalid currency value
-	ErrInvalidCurrency = errors.New("Invalid currency value provided")
+	ErrInvalidCurrency = errors.New("invalid currency value provided")
 
 	// ErrInvalidFUS is the error returned when Functional unit share is equal to 0
-	ErrInvalidFUS = errors.New("Invalid functional unit share provided")
+	ErrInvalidFUS = errors.New("invalid functional unit share provided")
 )
 
 // replacer is the regex which replaces all invalid characters inside a string representing a currency value
@@ -30,22 +30,22 @@ const (
 // Currency represents money with all the meta data required.
 type Currency struct {
 	// Code represents the international currency code
-	Code string
+	Code string `json:"code,omitempty"`
 	// Symbol is the respective currency symbol
-	Symbol string
+	Symbol string `json:"symbol,omitempty"`
 	// Main represents the main unit value of the currency
-	Main int
+	Main int `json:"main,omitempty"`
 	// Fractional represents the fractional unit value of the currency
-	Fractional int
+	Fractional int `json:"fractional,omitempty"`
 	// FUName is the name of the fractional unit of the currency. e.g. paise
-	FUName string
+	FUName string `json:"fuName,omitempty"`
 	// FUShare represents the number of fractional units that make up 1 main unit. e.g. ₹1 = 100 Paise.
-	FUShare uint
+	FUShare uint `json:"fuShare,omitempty"`
 
 	// fuDigits is the number of digits in FUShare-1 (i.e. number of digits in the maximum value which the fractional unit can have, e.g. 99 paise, 2 digits)
-	fuDigits int
+	fuDigits int `json:"fuDigits,omitempty"`
 	// magnitude is the fraction which sets the magnitude required for the rounding function
-	magnitude float64
+	magnitude float64 `json:"magnitude,omitempty"`
 }
 
 // New returns a new instance of currency.
