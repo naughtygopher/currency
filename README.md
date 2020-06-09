@@ -1,3 +1,6 @@
+<p align="center"><img src="https://user-images.githubusercontent.com/1092882/84137258-11328400-aa6a-11ea-94d9-9d58e56a0ea3.png" alt="webgo gopher" width="256px"/></p>
+
+
 [![build](https://travis-ci.org/bnkamalesh/currency.svg?branch=master)](https://travis-ci.org/bnkamalesh/currency)
 [![coverage](https://codecov.io/gh/bnkamalesh/currency/branch/master/graph/badge.svg)](https://codecov.io/gh/bnkamalesh/currency)
 [![report](https://goreportcard.com/badge/github.com/bnkamalesh/currency)](https://goreportcard.com/report/github.com/bnkamalesh/currency)
@@ -116,3 +119,7 @@ BenchmarkDivide-4                 	10000000	       155 ns/op
 3. [Non-decimal sub unit in currencies are only used by 2 countries today](https://en.wikipedia.org/wiki/Non-decimal_currency). These are getting phased out.
 
 *IMPORTANT! This package does not support sub units which are not a power of 10. Nor does it support currencies with more than 1 sub unit*
+
+## The gopher
+
+The gopher used here was created using [Gopherize.me](https://gopherize.me/). Deal with currency professionally just like this gopher!
