@@ -1,6 +1,7 @@
 package currency
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -235,6 +236,42 @@ func TestParseFloat64(t *testing.T) {
 		if ft != nT.out.totalfractional {
 			t.Log("Expected:", nT.out.totalfractional, "got:", ft)
 			t.Fail()
+		}
+	}
+}
+
+func TestFormat(t *testing.T) {
+	c, _ := New(12, 75, "INR", "₹", "paise", 100)
+	list := []struct {
+		Verb     string
+		Expected string
+	}{
+		{
+			Verb:     "s",
+			Expected: "₹12.75",
+		},
+		{
+			Verb:     "d",
+			Expected: "12",
+		},
+		{
+			Verb:     "m",
+			Expected: "75",
+		},
+		{
+			Verb:     "f",
+			Expected: "12.75",
+		},
+		{
+			Verb:     "y",
+			Expected: "₹",
+		},
+	}
+	for _, l := range list {
+		formatstr := "%" + l.Verb
+		str := fmt.Sprintf(formatstr, c)
+		if str != l.Expected {
+			t.Errorf("Format string: %s, Expected '%s', got '%s'", formatstr, l.Expected, str)
 		}
 	}
 }

@@ -3,6 +3,8 @@ package currency
 
 import (
 	"errors"
+	"fmt"
+	"io"
 	"math"
 	"regexp"
 	"strconv"
@@ -217,6 +219,38 @@ func (c *Currency) String(prefixSymbol bool) string {
 	}
 
 	return str
+}
+
+func (c *Currency) Format(s fmt.State, verb rune) {
+	switch verb {
+	// 's' verb would produce the full currency string along with its symbol. equivalent to c.String(true)
+	case 's':
+		{
+			_, _ = io.WriteString(s, c.String(true))
+		}
+	// 'd' verb would produce the main integer part of the currency, without the symbol
+	case 'd':
+		{
+			main := strconv.Itoa(c.Main)
+			_, _ = io.WriteString(s, main)
+		}
+	// 'm' verb would produce the fractional integer part of the currency, without the symbol
+	case 'm':
+		{
+			main := strconv.Itoa(c.Fractional)
+			_, _ = io.WriteString(s, main)
+		}
+	// 'f' verb would produce the full currency string without its symbol. equivalent to c.String(false)
+	case 'f':
+		{
+			_, _ = io.WriteString(s, c.String(false))
+		}
+	// 'y' verb would produce the currency symbol alone
+	case 'y':
+		{
+			_, _ = io.WriteString(s, c.Symbol)
+		}
+	}
 }
 
 // round rounds off the float value to the configured precision and returns an integer.
