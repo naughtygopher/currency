@@ -9,10 +9,9 @@
 [![awesome-go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go#financial)
 
 
-## Currency v1.0.0
+## Currency v2.0.0
 
-Currency package helps you do currency computations accurately, by avoiding *_peddling_*.
-The `Currency` struct holds all the data required to define a currency.
+Currency package helps you do currency computations accurately. `Currency` struct holds all the data required to define a currency.
 
 ```
 type Currency struct {
@@ -29,6 +28,10 @@ type Currency struct {
 	// FUShare represents the no.of fractional/sub units that make up 1 main unit. e.g. ₹1 = 100 paise
 	// Number of fractional units that make up 1 unit of the main value
 	FUShare uint
+	// PrefixSymbol if true will prefix the symbol when stringified
+	PrefixSymbol bool
+	// SuffixSymbol if true will suffix the symbol when stringified
+	SuffixSymbol bool
 }
 ```
 
@@ -81,7 +84,7 @@ e.g. ₹1/- (INR 1) is to be divided by 3. There are 2 options of dividing this 
 
 ### Multiple currency representations
 
-1. `c1.String(prefixSymbol bool)`, returns a string representation of the currency value. Returns string prefixed by its respective symbol if `prefixSymbol` is true
+1. `c1.String()`, returns a string representation of the currency value
 2. `c1.Float64()`, returns a float64 representation of the currency value
 
 ## Benchmarks
