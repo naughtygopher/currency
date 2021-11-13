@@ -20,7 +20,8 @@ func TestUpdateWithFractional(t *testing.T) {
 		t.Fail()
 	}
 
-	s := cur.String(true)
+	cur.PrefixSymbol = true
+	s := cur.String()
 	if s != "₹10.05" {
 		t.Log("Expected ₹10.05, got:", s)
 		t.Fail()
@@ -59,7 +60,8 @@ func TestAdd(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur1.String(true)
+	cur1.PrefixSymbol = true
+	str := cur1.String()
 	if str != "₹21.98" {
 		t.Log("Expected ₹21.98, got:", str)
 		t.Fail()
@@ -98,7 +100,8 @@ func TestAdd2(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur1.String(true)
+	cur1.PrefixSymbol = true
+	str := cur1.String()
 	if str != "₹0.00" {
 		t.Log("Expected ₹0.00, got:", str)
 		t.Fail()
@@ -136,7 +139,8 @@ func TestAdd3(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur1.String(true)
+	cur1.PrefixSymbol = true
+	str := cur1.String()
 	if str != "-₹20.50" {
 		t.Log("Expected -₹20.50, got:", str)
 		t.Fail()
@@ -168,7 +172,8 @@ func TestAddInt(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur.String(true)
+	cur.PrefixSymbol = true
+	str := cur.String()
 	if str != "₹21.09" {
 		t.Log("Expected:", "₹21.09", "got:", str)
 		t.Fail()
@@ -207,7 +212,8 @@ func TestSubtract(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur1.String(true)
+	cur1.PrefixSymbol = true
+	str := cur1.String()
 	if str != "-₹1.00" {
 		t.Log("Expected -₹1.00, got:", str)
 		t.Fail()
@@ -246,7 +252,8 @@ func TestSub2(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur1.String(true)
+	cur1.PrefixSymbol = true
+	str := cur1.String()
 	if str != "₹4.70" {
 		t.Log("Expected ₹4.70, got:", str)
 		t.Fail()
@@ -278,7 +285,8 @@ func TestSubtractInt(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur.String(true)
+	cur.PrefixSymbol = true
+	str := cur.String()
 	if str != "-₹0.09" {
 		t.Log("Expected:", "-₹0.09", "got:", str)
 		t.Fail()
@@ -310,7 +318,8 @@ func TestMultiply(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur1.String(true)
+	cur1.PrefixSymbol = true
+	str := cur1.String()
 	if str != "₹52.50" {
 		t.Log("Expected ₹52.50, got:", str)
 		t.Fail()
@@ -342,7 +351,8 @@ func TestMultiplyFloat64(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur1.String(true)
+	cur1.PrefixSymbol = true
+	str := cur1.String()
 	if str != "₹11.03" {
 		t.Log("Expected ₹11.03, got:", str)
 		t.Fail()
@@ -374,7 +384,8 @@ func TestPercent(t *testing.T) {
 		t.Fail()
 	}
 
-	str := cur2.String(true)
+	cur2.PrefixSymbol = true
+	str := cur2.String()
 	if str != "₹0.55" {
 		t.Log("Expected ₹0.55, got:", str)
 		t.Fail()
@@ -400,7 +411,8 @@ func TestDivideRetain(t *testing.T) {
 		t.Fail()
 	}
 
-	for _, split := range splits {
+	for idx := range splits {
+		split := splits[idx]
 		if split.Main != 0 {
 			t.Log("Expected", 0, "got:", split.Main)
 			t.Fail()
@@ -411,7 +423,8 @@ func TestDivideRetain(t *testing.T) {
 			t.Fail()
 		}
 
-		str := split.String(true)
+		split.PrefixSymbol = true
+		str := split.String()
 		if str != "₹0.33" {
 			t.Log("Expected:", "₹0.33", "got:", str)
 			t.Fail()
@@ -443,7 +456,8 @@ func TestDivideNoRetain(t *testing.T) {
 		t.Fail()
 	}
 
-	for _, split := range splits {
+	for idx := range splits {
+		split := splits[idx]
 		if split.Main != 0 {
 			t.Log("Expected", 0, "got:", split.Main)
 			t.Fail()
@@ -454,7 +468,8 @@ func TestDivideNoRetain(t *testing.T) {
 			t.Fail()
 		}
 
-		str := split.String(true)
+		split.PrefixSymbol = true
+		str := split.String()
 		if str != "₹0.33" && str != "₹0.34" {
 			t.Log("Expected:", "₹0.33 or ₹0.34", "got:", str)
 			t.Fail()

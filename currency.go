@@ -48,6 +48,10 @@ type Currency struct {
 	fuDigits int `json:"fuDigits,omitempty"`
 	// magnitude is the fraction which sets the magnitude required for the rounding function
 	magnitude float64 `json:"magnitude,omitempty"`
+	// PrefixSymbol if true will add the symbol as a prefix to the string representation of currency. e.g. ₹1.5
+	PrefixSymbol bool `json:"alwaysAddPrefix,omitempty"`
+	// SuffixSymbol if true will add the symbol as a suffix to the string representation of currency. e.g. 1.5₹
+	SuffixSymbol bool `json:"alwaysAddSuffix,omitempty"`
 }
 
 // New returns a new instance of currency.
@@ -190,8 +194,7 @@ func (c *Currency) Float64() float64 {
 	return float64(c.Main) + (float64(frac) / float64(c.FUShare))
 }
 
-// String returns the currency represented as string.
-func (c *Currency) String(prefixSymbol bool) string {
+func (c *Currency) StringWithoutSymbols() string {
 	frc := c.Fractional
 	if c.Fractional < 0 {
 		frc = -frc
@@ -209,8 +212,14 @@ func (c *Currency) String(prefixSymbol bool) string {
 	if c.Fractional < 0 {
 		str = "-" + str
 	}
+	return str
+}
 
-	if prefixSymbol {
+// String returns the currency represented as string.
+func (c *Currency) String() string {
+	str := c.StringWithoutSymbols()
+
+	if c.PrefixSymbol {
 		if c.Fractional < 0 || c.Main < 0 {
 			str = strings.Replace(str, "-", "-"+c.Symbol, 1)
 		} else {
@@ -218,15 +227,20 @@ func (c *Currency) String(prefixSymbol bool) string {
 		}
 	}
 
+	if c.SuffixSymbol {
+		str = str + c.Symbol
+	}
+
 	return str
 }
 
 func (c *Currency) Format(s fmt.State, verb rune) {
 	switch verb {
-	// 's' verb would produce the full currency string along with its symbol. equivalent to c.String(true)
-	case 's':
+	// 's' verb would produce the full currency string along with its symbol. equivalent to c.String()
+	// 'v' - only once you add this does the fmt.Stringer seem to work, otherwise it's always printing blank
+	case 's', 'v':
 		{
-			_, _ = io.WriteString(s, c.String(true))
+			_, _ = io.WriteString(s, c.String())
 		}
 	// 'd' verb would produce the main integer part of the currency, without the symbol
 	case 'd':
@@ -240,10 +254,10 @@ func (c *Currency) Format(s fmt.State, verb rune) {
 			main := strconv.Itoa(c.Fractional)
 			_, _ = io.WriteString(s, main)
 		}
-	// 'f' verb would produce the full currency string without its symbol. equivalent to c.String(false)
+	// 'f' verb would produce the full currency string without its symbol. equivalent to c.StringWithoutSymbols()
 	case 'f':
 		{
-			_, _ = io.WriteString(s, c.String(false))
+			_, _ = io.WriteString(s, c.StringWithoutSymbols())
 		}
 	// 'y' verb would produce the currency symbol alone
 	case 'y':

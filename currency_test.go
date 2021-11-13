@@ -94,7 +94,8 @@ func TestNew(t *testing.T) {
 			t.Fail()
 		}
 
-		str := cur.String(true)
+		cur.PrefixSymbol = true
+		str := cur.String()
 		if str != nT.out.str {
 			t.Log("Expected:", nT.out.str, "got:", str)
 			t.Fail()
@@ -137,7 +138,8 @@ func TestNewFractional(t *testing.T) {
 			t.Fail()
 		}
 
-		str := cur.String(true)
+		cur.PrefixSymbol = true
+		str := cur.String()
 		if str != nT.out.str {
 			t.Log("Expected:", nT.out.str, "got:", str)
 			t.Fail()
@@ -179,7 +181,8 @@ func TestParseStr(t *testing.T) {
 			t.Fail()
 		}
 
-		str := cur.String(true)
+		cur.PrefixSymbol = true
+		str := cur.String()
 		if str != nT.out.str {
 			t.Log("Expected:", nT.out.str, "got:", str)
 			t.Fail()
@@ -221,7 +224,8 @@ func TestParseFloat64(t *testing.T) {
 			t.Fail()
 		}
 
-		str := cur.String(true)
+		cur.PrefixSymbol = true
+		str := cur.String()
 		if str != nT.out.str {
 			t.Log("Expected:", nT.out.str, "got:", str)
 			t.Fail()
@@ -245,10 +249,28 @@ func TestFormat(t *testing.T) {
 	list := []struct {
 		Verb     string
 		Expected string
+		Prefix   bool
+		Suffix   bool
 	}{
 		{
 			Verb:     "s",
+			Expected: "12.75",
+		},
+		{
+			Verb:     "s",
+			Prefix:   true,
 			Expected: "₹12.75",
+		},
+		{
+			Verb:     "s",
+			Suffix:   true,
+			Expected: "12.75₹",
+		},
+		{
+			Verb:     "s",
+			Suffix:   true,
+			Prefix:   true,
+			Expected: "₹12.75₹",
 		},
 		{
 			Verb:     "d",
@@ -268,6 +290,9 @@ func TestFormat(t *testing.T) {
 		},
 	}
 	for _, l := range list {
+		c.PrefixSymbol = l.Prefix
+		c.SuffixSymbol = l.Suffix
+
 		formatstr := "%" + l.Verb
 		str := fmt.Sprintf(formatstr, c)
 		if str != l.Expected {
@@ -302,15 +327,16 @@ func BenchmarkParseString(t *testing.B) {
 
 func BenchmarkString(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
+	cur1.PrefixSymbol = true
 	for i := 0; i < t.N; i++ {
-		cur1.String(true)
+		cur1.String()
 	}
 }
 
 func BenchmarkStringNoPrefix(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
-		cur1.String(false)
+		cur1.StringWithoutSymbols()
 	}
 }
 
