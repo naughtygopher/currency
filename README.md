@@ -4,6 +4,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/naughtygopher/currency.svg)](https://pkg.go.dev/github.com/naughtygopher/currency)
 [![Go Report Card](https://goreportcard.com/badge/github.com/naughtygopher/currency)](https://goreportcard.com/report/github.com/naughtygopher/currency)
 [![Coverage Status](https://coveralls.io/repos/github/naughtygopher/currency/badge.svg?branch=master)](https://coveralls.io/github/naughtygopher/currency?branch=master)
+[![Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go/tree/main?tab=readme-ov-file#financial)
 
 ## Currency v2.0.1
 
