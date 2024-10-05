@@ -1,3 +1,3 @@
-module github.com/bnkamalesh/currency/v2
+module github.com/naughtygopher/currency/v2
 
 go 1.14

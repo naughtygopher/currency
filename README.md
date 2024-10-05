@@ -1,13 +1,9 @@
 <p align="center"><img src="https://user-images.githubusercontent.com/1092882/84137258-11328400-aa6a-11ea-94d9-9d58e56a0ea3.png" alt="webgo gopher" width="256px"/></p>
 
-
-[![build](https://travis-ci.org/bnkamalesh/currency.svg?branch=master)](https://travis-ci.org/bnkamalesh/currency)
-[![coverage](https://codecov.io/gh/bnkamalesh/currency/branch/master/graph/badge.svg)](https://codecov.io/gh/bnkamalesh/currency)
-[![report](https://goreportcard.com/badge/github.com/bnkamalesh/currency)](https://goreportcard.com/report/github.com/bnkamalesh/currency)
-[![maintainability](https://api.codeclimate.com/v1/badges/d181840cf59e912b6c31/maintainability)](https://codeclimate.com/github/bnkamalesh/currency/maintainability)
-[![godoc](https://godoc.org/github.com/nathany/looper?status.svg)](https://godoc.org/github.com/bnkamalesh/currency)
-[![awesome-go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go#financial)
-
+[![](https://github.com/naughtygopher/currency/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/naughtygopher/currency/actions)
+[![Go Reference](https://pkg.go.dev/badge/github.com/naughtygopher/currency.svg)](https://pkg.go.dev/github.com/naughtygopher/currency)
+[![Go Report Card](https://goreportcard.com/badge/github.com/naughtygopher/currency)](https://goreportcard.com/report/github.com/naughtygopher/currency)
+[![Coverage Status](https://coveralls.io/repos/github/naughtygopher/currency/badge.svg?branch=master)](https://coveralls.io/github/naughtygopher/currency?branch=master)
 
 ## Currency v2.0.0
 
@@ -48,13 +44,13 @@ funame - Name of the fractional/sub unit
 fushare - Number of fractional/sub units that make up 1 unit of the main/super unit
 ```
 
-*IMPORTANT! Fractional unit can be negative only when the main value is 0. If the main value is not 0, fractional unit's negative sign is ignored.*
+_IMPORTANT! Fractional unit can be negative only when the main value is 0. If the main value is not 0, fractional unit's negative sign is ignored._
 
 ### Parsers & convenience methods
 
 1. `NewFractional(fractional int, symbol string,  fulabel string, fushare uint)` returns a currency struct instance, given a currency's total value represented by the fractional unit
-3. `ParseString(value string, code, symbol string,  fulabel string, fushare uint)` returns a currency struct instance, given a currency value represented as string
-4. `ParseFloat64(value float64, code, symbol string, funame string, fushare uint)` returns a currency struct instance, given a currency value represented in float64
+2. `ParseString(value string, code, symbol string,  fulabel string, fushare uint)` returns a currency struct instance, given a currency value represented as string
+3. `ParseFloat64(value float64, code, symbol string, funame string, fushare uint)` returns a currency struct instance, given a currency value represented in float64
 
 ### Computational methods
 
@@ -66,11 +62,11 @@ IMPORTANT: Computation is supported only between same type of currencies (i.e. c
 4. `c1.SubtractIn(main int, fractional int)` subtract the currency equivalent of the main & fractional int from c1
 5. `c1.Multiply(n int)` multiply c1 by n, where n is an integer
 6. `c1.MultiplyFloat64(n float64)` multiply c1 by n, where n is a float64 value
-7. `c1.UpdateWithFractional(ftotal int)` would update the the value of c1,  where *ftotal* is the total value of the currency in fractional unit. e.g. INR, `UpdateWithFractional(100)` would set the main value as `1` and fractional unit as `0`
+7. `c1.UpdateWithFractional(ftotal int)` would update the the value of c1, where _ftotal_ is the total value of the currency in fractional unit. e.g. INR, `UpdateWithFractional(100)` would set the main value as `1` and fractional unit as `0`
 8. `c1.FractionalTotal() int` returns the total value of the currency in its fractional unit. e.g. INR, if the Main value is `1` and fractional unit is `0`, it would return `100`, i.e. 100 paise
 9. `c1.Percent(n float64) currency` returns a new currency instance which is n percentage of c1
 10. `c1.Divide(n int, retain bool)[]currency, ok ` returns a slice of currency of size n. `ok` if returned as `true` means the currency value was perfectly divisible by n. If `retain` is true,
-then `c1` will have the remainder value after dividing otherwise it is distributed among the returned currencies.
+    then `c1` will have the remainder value after dividing otherwise it is distributed among the returned currencies.
 
 #### Why does `Divide(n int, retain bool)` return a slice of currencies?
 
@@ -78,9 +74,9 @@ then `c1` will have the remainder value after dividing otherwise it is distribut
 
 e.g. ₹1/- (INR 1) is to be divided by 3. There are 2 options of dividing this by 3.
 
-	1. Set 33 paise per split, and retain the remaining 1 paise at source. (`Divide(n, true)`)
+    1. Set 33 paise per split, and retain the remaining 1 paise at source. (`Divide(n, true)`)
 
-	2. Set 1 of the split with an extra value, i.e. 34 + 33 + 33. (`Divide(n, false)`)
+    2. Set 1 of the split with an extra value, i.e. 34 + 33 + 33. (`Divide(n, false)`)
 
 ### Multiple currency representations
 
@@ -117,11 +113,11 @@ BenchmarkDivide-4                 	10000000	       155 ns/op
 
 ## References
 
-1. [Ref - Sub unit or fractional unit](https://en.wikipedia.org/wiki/Denomination_(currency))
+1. [Ref - Sub unit or fractional unit](<https://en.wikipedia.org/wiki/Denomination_(currency)>)
 2. [Ref - Currencies](https://en.wikipedia.org/wiki/Currency) - about currencies
 3. [Non-decimal sub unit in currencies are only used by 2 countries today](https://en.wikipedia.org/wiki/Non-decimal_currency). These are getting phased out.
 
-*IMPORTANT! This package does not support sub units which are not a power of 10. Nor does it support currencies with more than 1 sub unit*
+_IMPORTANT! This package does not support sub units which are not a power of 10. Nor does it support currencies with more than 1 sub unit_
 
 ## The gopher
 
