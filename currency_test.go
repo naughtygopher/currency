@@ -1,7 +1,9 @@
 package currency
 
 import (
+	"errors"
 	"fmt"
+	"strconv"
 	"testing"
 )
 
@@ -11,6 +13,7 @@ type output struct {
 	totalfractional int
 	str             string
 	float           float64
+	err             error
 }
 
 type input struct {
@@ -40,7 +43,7 @@ var newTests = []struct {
 			symbol:          "₹",
 			fulabel:         "paise",
 			fushare:         100},
-		output{10, 50, 1050, "₹10.50", 10.50},
+		output{10, 50, 1050, "₹10.50", 10.50, nil},
 	},
 	{
 		input{
@@ -53,7 +56,7 @@ var newTests = []struct {
 			symbol:          "₹",
 			fulabel:         "paise",
 			fushare:         100},
-		output{-10, 50, -1050, "-₹10.50", -10.50},
+		output{-10, 50, -1050, "-₹10.50", -10.50, nil},
 	},
 	{
 		input{
@@ -66,7 +69,20 @@ var newTests = []struct {
 			symbol:          "₹",
 			fulabel:         "paise",
 			fushare:         100},
-		output{0, -50, -50, "-₹0.50", -0.50},
+		output{0, -50, -50, "-₹0.50", -0.50, nil},
+	},
+	{
+		input{
+			main:            1,
+			fractional:      100,
+			totalfractional: 0,
+			code:            "INR",
+			str:             "1.00",
+			symbol:          "₹",
+			fulabel:         "paise",
+			fushare:         0,
+		},
+		output{0, 0, 0, "", 0, ErrInvalidFUS},
 	},
 }
 
@@ -79,9 +95,11 @@ func TestNew(t *testing.T) {
 			nT.inp.symbol,
 			nT.inp.fulabel,
 			nT.inp.fushare)
-
 		if err != nil {
-			t.Fatal(err)
+			if !errors.Is(err, nT.out.err) {
+				t.Fatal(err)
+			}
+			continue
 		}
 
 		if cur.Main != nT.out.main {
@@ -125,7 +143,10 @@ func TestNewFractional(t *testing.T) {
 			nT.inp.fushare)
 
 		if err != nil {
-			t.Fatal(err)
+			if !errors.Is(err, nT.out.err) {
+				t.Fatal(err)
+			}
+			continue
 		}
 
 		if cur.Main != nT.out.main {
@@ -168,7 +189,10 @@ func TestParseStr(t *testing.T) {
 			nT.inp.fushare)
 
 		if err != nil {
-			t.Fatal(err)
+			if !errors.Is(err, nT.out.err) {
+				t.Fatal(err)
+			}
+			continue
 		}
 
 		if cur.Main != nT.out.main {
@@ -199,6 +223,14 @@ func TestParseStr(t *testing.T) {
 			t.Fail()
 		}
 	}
+
+	// code:            "INR",
+	// symbol:          "₹",
+	// fulabel:         "paise",
+	_, err := ParseString("", "INR", "₹", "paise", 0)
+	if !errors.Is(err, strconv.ErrSyntax) {
+		t.Error(err)
+	}
 }
 
 func TestParseFloat64(t *testing.T) {
@@ -211,7 +243,10 @@ func TestParseFloat64(t *testing.T) {
 			nT.inp.fushare)
 
 		if err != nil {
-			t.Fatal(err)
+			if !errors.Is(err, nT.out.err) {
+				t.Fatal(err)
+			}
+			continue
 		}
 
 		if cur.Main != nT.out.main {
@@ -352,5 +387,59 @@ func BenchmarkFractionalTotal(t *testing.B) {
 
 	for i := 0; i < t.N; i++ {
 		cur1.FractionalTotal()
+	}
+}
+
+func Test_digits(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "single positive",
+			args: args{
+				n: 1,
+			},
+			want: 1,
+		},
+		{
+			name: "single negative",
+			args: args{
+				n: -1,
+			},
+			want: 1,
+		},
+		{
+			name: "more digits positive",
+			args: args{
+				n: 100,
+			},
+			want: 3,
+		},
+		{
+			name: "more digits negative",
+			args: args{
+				n: -100,
+			},
+			want: 3,
+		},
+		{
+			name: "zero",
+			args: args{
+				n: 0,
+			},
+			want: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := digits(tt.args.n); got != tt.want {
+				t.Errorf("digits() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }

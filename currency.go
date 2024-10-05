@@ -45,9 +45,9 @@ type Currency struct {
 	FUShare uint `json:"fuShare,omitempty"`
 
 	// fuDigits is the number of digits in FUShare-1 (i.e. number of digits in the maximum value which the fractional unit can have, e.g. 99 paise, 2 digits)
-	fuDigits int `json:"fuDigits,omitempty"`
+	fuDigits int
 	// magnitude is the fraction which sets the magnitude required for the rounding function
-	magnitude float64 `json:"magnitude,omitempty"`
+	magnitude float64
 	// PrefixSymbol if true will add the symbol as a prefix to the string representation of currency. e.g. ₹1.5
 	PrefixSymbol bool `json:"alwaysAddPrefix,omitempty"`
 	// SuffixSymbol if true will add the symbol as a suffix to the string representation of currency. e.g. 1.5₹
@@ -137,11 +137,11 @@ func ParseString(value string, code, symbol, funame string, fushare uint) (*Curr
 
 // ParseFloat64 will parse a float value into currency.
 func ParseFloat64(value float64, code, symbol, funame string, fushare uint) (*Currency, error) {
-	if fushare == 0 {
+	fus := int(fushare)
+	if fus == 0 {
 		return nil, ErrInvalidFUS
 	}
 
-	fus := int(fushare)
 	fudigits := digits(fus - 1)
 
 	mag := float64(5.0)
@@ -160,17 +160,7 @@ func ParseFloat64(value float64, code, symbol, funame string, fushare uint) (*Cu
 
 	m := main + (fractional / fus)
 	f := fractional % fus
-
-	return &Currency{
-		Code:       code,
-		Symbol:     symbol,
-		Main:       m,
-		Fractional: f,
-		FUName:     funame,
-		FUShare:    fushare,
-		fuDigits:   fudigits,
-		magnitude:  mag,
-	}, nil
+	return New(m, f, code, symbol, funame, fushare)
 }
 
 // FractionalTotal returns the total value in fractional int.
