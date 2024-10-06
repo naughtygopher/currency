@@ -1,10 +1,11 @@
 package currency
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type output struct {
@@ -87,6 +88,7 @@ var newTests = []struct {
 }
 
 func TestNew(t *testing.T) {
+	asserter := assert.New(t)
 	for _, nT := range newTests {
 		cur, err := New(
 			nT.inp.main,
@@ -96,44 +98,24 @@ func TestNew(t *testing.T) {
 			nT.inp.fulabel,
 			nT.inp.fushare)
 		if err != nil {
-			if !errors.Is(err, nT.out.err) {
-				t.Fatal(err)
-			}
+			asserter.ErrorIs(err, nT.out.err)
 			continue
 		}
 
-		if cur.Main != nT.out.main {
-			t.Log("Expected:", nT.out.main, "got:", cur.Main)
-			t.Fail()
-		}
-
-		if cur.Fractional != nT.out.fractional {
-			t.Log("Expected:", nT.out.fractional, "got:", cur.Fractional)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.main, cur.Main)
+		asserter.Equal(nT.out.fractional, cur.Fractional)
+		asserter.Equal(nT.out.float, cur.Float64())
+		asserter.Equal(nT.out.totalfractional, cur.FractionalTotal())
 
 		cur.PrefixSymbol = true
-		str := cur.String()
-		if str != nT.out.str {
-			t.Log("Expected:", nT.out.str, "got:", str)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.str, cur.String())
 
-		if cur.Float64() != nT.out.float {
-			t.Log("Expected:", nT.out.float, "got:", cur.Float64())
-			t.Fail()
-		}
-
-		ft := cur.FractionalTotal()
-		if ft != nT.out.totalfractional {
-			t.Log("Expected:", nT.out.totalfractional, "got:", ft)
-			t.Fail()
-		}
 	}
 
 }
 
 func TestNewFractional(t *testing.T) {
+	asserter := assert.New(t)
 	for _, nT := range newTests {
 		cur, err := NewFractional(
 			nT.inp.totalfractional,
@@ -143,43 +125,23 @@ func TestNewFractional(t *testing.T) {
 			nT.inp.fushare)
 
 		if err != nil {
-			if !errors.Is(err, nT.out.err) {
-				t.Fatal(err)
-			}
+			asserter.ErrorIs(err, nT.out.err)
 			continue
 		}
 
-		if cur.Main != nT.out.main {
-			t.Log("Expected:", nT.out.main, "got:", cur.Main)
-			t.Fail()
-		}
-
-		if cur.Fractional != nT.out.fractional {
-			t.Log("Expected:", nT.out.fractional, "got:", cur.Fractional)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.main, cur.Main)
+		asserter.Equal(nT.out.fractional, cur.Fractional)
+		asserter.Equal(nT.out.float, cur.Float64())
+		asserter.Equal(nT.out.totalfractional, cur.FractionalTotal())
 
 		cur.PrefixSymbol = true
-		str := cur.String()
-		if str != nT.out.str {
-			t.Log("Expected:", nT.out.str, "got:", str)
-			t.Fail()
-		}
-
-		if cur.Float64() != nT.out.float {
-			t.Log("Expected:", nT.out.float, "got:", cur.Float64())
-			t.Fail()
-		}
-
-		ft := cur.FractionalTotal()
-		if ft != nT.out.totalfractional {
-			t.Log("Expected:", nT.out.totalfractional, "got:", ft)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.str, cur.String())
 	}
 }
 
 func TestParseStr(t *testing.T) {
+	asserter := assert.New(t)
+
 	for _, nT := range newTests {
 		cur, err := ParseString(
 			nT.inp.str,
@@ -189,51 +151,25 @@ func TestParseStr(t *testing.T) {
 			nT.inp.fushare)
 
 		if err != nil {
-			if !errors.Is(err, nT.out.err) {
-				t.Fatal(err)
-			}
+			asserter.ErrorIs(err, nT.out.err)
 			continue
 		}
 
-		if cur.Main != nT.out.main {
-			t.Log("Expected:", nT.out.main, "got:", cur.Main)
-			t.Fail()
-		}
-
-		if cur.Fractional != nT.out.fractional {
-			t.Log("Expected:", nT.out.fractional, "got:", cur.Fractional)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.main, cur.Main)
+		asserter.Equal(nT.out.fractional, cur.Fractional)
+		asserter.Equal(nT.out.float, cur.Float64())
+		asserter.Equal(nT.out.totalfractional, cur.FractionalTotal())
 
 		cur.PrefixSymbol = true
-		str := cur.String()
-		if str != nT.out.str {
-			t.Log("Expected:", nT.out.str, "got:", str)
-			t.Fail()
-		}
-
-		if cur.Float64() != nT.out.float {
-			t.Log("Expected:", nT.out.float, "got:", cur.Float64())
-			t.Fail()
-		}
-
-		ft := cur.FractionalTotal()
-		if ft != nT.out.totalfractional {
-			t.Log("Expected:", nT.out.totalfractional, "got:", ft)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.str, cur.String())
 	}
 
-	// code:            "INR",
-	// symbol:          "₹",
-	// fulabel:         "paise",
 	_, err := ParseString("", "INR", "₹", "paise", 0)
-	if !errors.Is(err, strconv.ErrSyntax) {
-		t.Error(err)
-	}
+	asserter.ErrorIs(err, strconv.ErrSyntax)
 }
 
 func TestParseFloat64(t *testing.T) {
+	asserter := assert.New(t)
 	for _, nT := range newTests {
 		cur, err := ParseFloat64(
 			nT.inp.float,
@@ -243,43 +179,21 @@ func TestParseFloat64(t *testing.T) {
 			nT.inp.fushare)
 
 		if err != nil {
-			if !errors.Is(err, nT.out.err) {
-				t.Fatal(err)
-			}
+			asserter.ErrorIs(err, nT.out.err)
 			continue
 		}
-
-		if cur.Main != nT.out.main {
-			t.Log("Expected:", nT.out.main, "got:", cur.Main)
-			t.Fail()
-		}
-
-		if cur.Fractional != nT.out.fractional {
-			t.Log("Expected:", nT.out.fractional, "got:", cur.Fractional)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.main, cur.Main)
+		asserter.Equal(nT.out.fractional, cur.Fractional)
+		asserter.Equal(nT.out.float, cur.Float64())
+		asserter.Equal(nT.out.totalfractional, cur.FractionalTotal())
 
 		cur.PrefixSymbol = true
-		str := cur.String()
-		if str != nT.out.str {
-			t.Log("Expected:", nT.out.str, "got:", str)
-			t.Fail()
-		}
-
-		if cur.Float64() != nT.out.float {
-			t.Log("Expected:", nT.out.float, "got:", cur.Float64())
-			t.Fail()
-		}
-
-		ft := cur.FractionalTotal()
-		if ft != nT.out.totalfractional {
-			t.Log("Expected:", nT.out.totalfractional, "got:", ft)
-			t.Fail()
-		}
+		asserter.Equal(nT.out.str, cur.String())
 	}
 }
 
 func TestFormat(t *testing.T) {
+	asserter := assert.New(t)
 	c, _ := New(12, 75, "INR", "₹", "paise", 100)
 	list := []struct {
 		Verb     string
@@ -329,34 +243,31 @@ func TestFormat(t *testing.T) {
 		c.SuffixSymbol = l.Suffix
 
 		formatstr := "%" + l.Verb
-		str := fmt.Sprintf(formatstr, c)
-		if str != l.Expected {
-			t.Errorf("Format string: %s, Expected '%s', got '%s'", formatstr, l.Expected, str)
-		}
+		asserter.Equal(l.Expected, fmt.Sprintf(formatstr, c))
 	}
 }
 
 func BenchmarkNew(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		New(10, 50, "INR", "₹", "paise", 100)
+		_, _ = New(10, 50, "INR", "₹", "paise", 100)
 	}
 }
 
 func BenchmarkNewFractional(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		NewFractional(1005, "INR", "₹", "paise", 100)
+		_, _ = NewFractional(1005, "INR", "₹", "paise", 100)
 	}
 }
 
 func BenchmarkParseFloat64(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		ParseFloat64(10.05, "INR", "₹", "paise", 100)
+		_, _ = ParseFloat64(10.05, "INR", "₹", "paise", 100)
 	}
 }
 
 func BenchmarkParseString(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		ParseString("10.05", "INR", "₹", "paise", 100)
+		_, _ = ParseString("10.05", "INR", "₹", "paise", 100)
 	}
 }
 
@@ -364,21 +275,21 @@ func BenchmarkString(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	cur1.PrefixSymbol = true
 	for i := 0; i < t.N; i++ {
-		cur1.String()
+		_ = cur1.String()
 	}
 }
 
 func BenchmarkStringNoPrefix(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
-		cur1.StringWithoutSymbols()
+		_ = cur1.StringWithoutSymbols()
 	}
 }
 
 func BenchmarkFloat64(t *testing.B) {
 	cur1, _ := New(10, 5, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
-		cur1.Float64()
+		_ = cur1.Float64()
 	}
 }
 
@@ -386,7 +297,7 @@ func BenchmarkFractionalTotal(t *testing.B) {
 	cur1, _ := New(1, 0, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
-		cur1.FractionalTotal()
+		_ = cur1.FractionalTotal()
 	}
 }
 
