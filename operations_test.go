@@ -2,187 +2,100 @@ package currency
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestUpdateWithFractional(t *testing.T) {
-	cur, err := New(1, 0, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Fatal(err)
-	}
-	cur.UpdateWithFractional(1005)
-	if cur.Main != 10 {
-		t.Log("Expected 10, got:", cur.Main)
-		t.Fail()
-	}
+	requirer := require.New(t)
+	asserter := assert.New(t)
 
-	if cur.Fractional != 5 {
-		t.Log("Expected 5, got:", cur.Fractional)
-		t.Fail()
-	}
+	cur, err := New(1, 0, "INR", "₹", "paise", 100)
+	requirer.NoError(err)
+
+	cur.UpdateWithFractional(1005)
+	asserter.Equal(10, cur.Main)
+	asserter.Equal(5, cur.Fractional)
 
 	cur.PrefixSymbol = true
-	s := cur.String()
-	if s != "₹10.05" {
-		t.Log("Expected ₹10.05, got:", s)
-		t.Fail()
-	}
-
-	if cur.Float64() != 10.05 {
-		t.Log("Expected 10.05, got:", cur.Float64())
-		t.Fail()
-	}
-
+	asserter.Equal("₹10.05", cur.String())
+	asserter.Equal(10.05, cur.Float64())
 }
 
 func TestAdd(t *testing.T) {
+	requirer := require.New(t)
+	asserter := assert.New(t)
+
 	cur1, err := New(10, 99, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-		return
-	}
+	requirer.NoError(err)
 
 	cur2, err := New(10, 99, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-		return
-	}
+	requirer.NoError(err)
 
 	cur1.Add(*cur2)
-	if cur1.Main != 21 {
-		t.Log("Expected 21, got:", cur1.Main)
-		t.Fail()
-	}
-
-	if cur1.Fractional != 98 {
-		t.Log("Expected 98, got:", cur1.Fractional)
-		t.Fail()
-	}
+	asserter.Equal(21, cur1.Main)
+	asserter.Equal(98, cur1.Fractional)
+	asserter.Equal(21.91, cur1.Float64())
 
 	cur1.PrefixSymbol = true
-	str := cur1.String()
-	if str != "₹21.98" {
-		t.Log("Expected ₹21.98, got:", str)
-		t.Fail()
-	}
-
-	if cur1.Float64() != 21.98 {
-		t.Log("Expected 21.98, got:", cur1.Float64())
-		t.Fail()
-	}
+	asserter.Equal("₹21.98", cur1.String())
 }
 
 func TestAdd2(t *testing.T) {
+	requirer := require.New(t)
+	asserter := assert.New(t)
+
 	cur1, err := New(10, 99, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-		return
-	}
+	requirer.NoError(err)
 
 	cur2, err := New(-10, 99, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-		return
-	}
+	requirer.NoError(err)
 
 	cur1.Add(*cur2)
 
-	if cur1.Main != 0 {
-		t.Log("Expected 0, got:", cur1.Main)
-		t.Fail()
-	}
-
-	if cur1.Fractional != 0 {
-		t.Log("Expected 0, got:", cur1.Fractional)
-		t.Fail()
-	}
+	asserter.Equal(0, cur1.Main)
+	asserter.Equal(0, cur1.Fractional)
+	asserter.Equal(0.00, cur1.Float64())
 
 	cur1.PrefixSymbol = true
-	str := cur1.String()
-	if str != "₹0.00" {
-		t.Log("Expected ₹0.00, got:", str)
-		t.Fail()
-	}
-
-	if cur1.Float64() != 0.00 {
-		t.Log("Expected 0.00, got:", cur1.Float64())
-		t.Fail()
-	}
+	asserter.Equal("₹0.00", cur1.String())
 }
 
 func TestAdd3(t *testing.T) {
+	requirer := require.New(t)
+	asserter := assert.New(t)
+
 	cur1, err := New(-10, 25, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-		return
-	}
+	requirer.NoError(err)
 
 	cur2, err := New(-10, 25, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-		return
-	}
+	requirer.NoError(err)
 
 	cur1.Add(*cur2)
-	if cur1.Main != -20 {
-		t.Log("Expected -20, got:", cur1.Main)
-		t.Fail()
-	}
 
-	if cur1.Fractional != 50 {
-		t.Log("Expected 50, got:", cur1.Fractional)
-		t.Fail()
-	}
+	asserter.Equal(-20, cur1.Main)
+	asserter.Equal(50, cur1.Fractional)
+	asserter.Equal(-20.50, cur1.Float64())
 
 	cur1.PrefixSymbol = true
-	str := cur1.String()
-	if str != "-₹20.50" {
-		t.Log("Expected -₹20.50, got:", str)
-		t.Fail()
-	}
-
-	if cur1.Float64() != -20.50 {
-		t.Log("Expected -20.50, got:", cur1.Float64())
-		t.Fail()
-	}
+	asserter.Equal("-₹20.50", cur1.String())
 }
 
 func TestAddInt(t *testing.T) {
+	requirer := require.New(t)
+	asserter := assert.New(t)
+
 	cur, err := New(10, 99, "INR", "₹", "paise", 100)
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-		return
-	}
+	requirer.NoError(err)
 
 	cur.AddInt(10, 10)
-
-	if cur.Main != 21 {
-		t.Log("Expected:", 21, "got:", cur.Main)
-		t.Fail()
-	}
-
-	if cur.Fractional != 9 {
-		t.Log("Expected:", 9, "got:", cur.Fractional)
-		t.Fail()
-	}
+	asserter.Equal(21, cur.Main)
+	asserter.Equal(9, cur.Fractional)
+	asserter.Equal(21.09, cur.Float64())
 
 	cur.PrefixSymbol = true
-	str := cur.String()
-	if str != "₹21.09" {
-		t.Log("Expected:", "₹21.09", "got:", str)
-		t.Fail()
-	}
-
-	if cur.Float64() != 21.09 {
-		t.Log("Expected:", 21.09, "got:", cur.Float64())
-		t.Fail()
-	}
+	asserter.Equal("₹21.09", cur.String())
 }
 
 func TestSubtract(t *testing.T) {
