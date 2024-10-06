@@ -36,7 +36,7 @@ func TestAdd(t *testing.T) {
 	cur1.Add(*cur2)
 	asserter.Equal(21, cur1.Main)
 	asserter.Equal(98, cur1.Fractional)
-	asserter.Equal(21.91, cur1.Float64())
+	asserter.Equal(21.98, cur1.Float64())
 
 	cur1.PrefixSymbol = true
 	asserter.Equal("₹21.98", cur1.String())
@@ -203,7 +203,7 @@ func TestPercent(t *testing.T) {
 	asserter.Equal(0.55, cur2.Float64())
 
 	cur2.PrefixSymbol = true
-	asserter.Equal("₹0.55", cur2.Fractional)
+	asserter.Equal("₹0.55", cur2.String())
 }
 
 func TestDivideRetain(t *testing.T) {
