@@ -33,7 +33,8 @@ func TestAdd(t *testing.T) {
 	cur2, err := New(10, 99, "INR", "₹", "paise", 100)
 	requirer.NoError(err)
 
-	cur1.Add(*cur2)
+	asserter.NoError(cur1.Add(*cur2))
+
 	asserter.Equal(21, cur1.Main)
 	asserter.Equal(98, cur1.Fractional)
 	asserter.Equal(21.98, cur1.Float64())
@@ -52,7 +53,7 @@ func TestAdd2(t *testing.T) {
 	cur2, err := New(-10, 99, "INR", "₹", "paise", 100)
 	requirer.NoError(err)
 
-	cur1.Add(*cur2)
+	asserter.NoError(cur1.Add(*cur2))
 
 	asserter.Equal(0, cur1.Main)
 	asserter.Equal(0, cur1.Fractional)
@@ -72,7 +73,7 @@ func TestAdd3(t *testing.T) {
 	cur2, err := New(-10, 25, "INR", "₹", "paise", 100)
 	requirer.NoError(err)
 
-	cur1.Add(*cur2)
+	asserter.NoError(cur1.Add(*cur2))
 
 	asserter.Equal(-20, cur1.Main)
 	asserter.Equal(50, cur1.Fractional)
@@ -108,7 +109,7 @@ func TestSubtract(t *testing.T) {
 	cur2, err := New(11, 99, "INR", "₹", "paise", 100)
 	requirer.NoError(err)
 
-	cur1.Subtract(*cur2)
+	asserter.NoError(cur1.Subtract(*cur2))
 
 	asserter.Equal(-1, cur1.Main)
 	asserter.Equal(0, cur1.Fractional)
@@ -128,7 +129,7 @@ func TestSub2(t *testing.T) {
 	cur2, err := New(5, 99, "INR", "₹", "paise", 100)
 	requirer.NoError(err)
 
-	cur1.Subtract(*cur2)
+	asserter.NoError(cur1.Subtract(*cur2))
 
 	asserter.Equal(4, cur1.Main)
 	asserter.Equal(70, cur1.Fractional)
@@ -278,7 +279,7 @@ func BenchmarkAdd(t *testing.B) {
 	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
-		cur1.Add(*cur2)
+		_ = cur1.Add(*cur2)
 	}
 }
 
@@ -294,7 +295,7 @@ func BenchmarkSubtract(t *testing.B) {
 	cur2, _ := New(10, 5, "INR", "₹", "paise", 100)
 
 	for i := 0; i < t.N; i++ {
-		cur1.Subtract(*cur2)
+		_ = cur1.Subtract(*cur2)
 	}
 }
 
@@ -329,6 +330,6 @@ func BenchmarkPercent(t *testing.B) {
 func BenchmarkDivide(t *testing.B) {
 	cur, _ := New(9999, 0, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
-		cur.Divide(2, true)
+		_, _ = cur.Divide(2, true)
 	}
 }
