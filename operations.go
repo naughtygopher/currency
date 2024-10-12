@@ -70,13 +70,20 @@ func (c *Currency) MultiplyFloat64(by float64) {
 	c.UpdateWithFractional(round(t, c.magnitude))
 }
 
-// Divide divides the currency by the given integer and returns a list of currencies and bool.
-// If `retain` is set as true, the balance will not be distributed among the splits, instead
-// retained inside c.
-// It returns a list because, when the currency cannot be split/divided equally,
-// then the remainder has to be distributed. The bool value if `true`, means the currency was
-// split equally.
+// Divide is a deprecated method which does allocations
+// Deprecated: Divide is not the technical term when dealing with currency.
 func (c *Currency) Divide(by int, retain bool) ([]Currency, bool) {
+	return c.Allocate(by, retain)
+}
+
+// Allocate does fair allocation of the currency by the given integer and returns a list of currencies and bool.
+/*
+   If `retain` is set as true, the balance will not be distributed among the splits,
+   instead retained inside c. It returns a list because, when the currency cannot
+   be split/divided equally, then the remainder has to be distributed.
+   The bool value if `true`, means the currency was split equally.
+*/
+func (c *Currency) Allocate(by int, retain bool) ([]Currency, bool) {
 	sE := false
 
 	ft := c.FractionalTotal()

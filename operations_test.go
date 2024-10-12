@@ -327,9 +327,9 @@ func BenchmarkPercent(t *testing.B) {
 	}
 }
 
-func BenchmarkDivide(t *testing.B) {
+func BenchmarkAllocate(t *testing.B) {
 	cur, _ := New(9999, 0, "INR", "₹", "paise", 100)
 	for i := 0; i < t.N; i++ {
-		_, _ = cur.Divide(2, true)
+		_, _ = cur.Allocate(2, true)
 	}
 }

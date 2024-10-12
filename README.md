@@ -11,7 +11,7 @@
 
 Currency package helps you do currency computations accurately. `Currency` struct holds all the data required to define a currency.
 
-```
+```golang
 type Currency struct {
 	// Code represents the international currency code
 	Code string
@@ -35,7 +35,7 @@ type Currency struct {
 
 ### New(main int, fractional int, code, symbol string, funame string, fushare uint)
 
-New returns a pointer of currency instance created based on the values provided
+New returns a pointer of currency instance created based on the configuration.
 
 ```
 main - Main/Super unit of the currency
@@ -56,7 +56,7 @@ _IMPORTANT! Fractional unit can be negative only when the main value is 0. If th
 
 ### Computational methods
 
-IMPORTANT: Computation is supported only between same type of currencies (i.e. currency codes should be same)
+IMPORTANT: Computation is supported only between same type of currencies (i.e. currency codes _*must*_ match)
 
 1. `c1.Add(c2 currency)` add c2 to c1, and update c1
 2. `c1.AddInt(main int, fractional int)` add the currency equivalent of the main & fractional int to c1
@@ -67,12 +67,12 @@ IMPORTANT: Computation is supported only between same type of currencies (i.e. c
 7. `c1.UpdateWithFractional(ftotal int)` would update the the value of c1, where _ftotal_ is the total value of the currency in fractional unit. e.g. INR, `UpdateWithFractional(100)` would set the main value as `1` and fractional unit as `0`
 8. `c1.FractionalTotal() int` returns the total value of the currency in its fractional unit. e.g. INR, if the Main value is `1` and fractional unit is `0`, it would return `100`, i.e. 100 paise
 9. `c1.Percent(n float64) currency` returns a new currency instance which is n percentage of c1
-10. `c1.Divide(n int, retain bool)[]currency, ok ` returns a slice of currency of size n. `ok` if returned as `true` means the currency value was perfectly divisible by n. If `retain` is true,
-    then `c1` will have the remainder value after dividing otherwise it is distributed among the returned currencies.
+10. `c1.Allocate(n int, retain bool)[]currency, ok ` returns a slice of currency of size n. `ok` if **true** means the currency value is fully divisible by n. If `retain` is true,
+    then `c1` will have the remainder value after allocation, otherwise the remainder is distributed among the returned currencies.
 
-#### Why does `Divide(n int, retain bool)` return a slice of currencies?
+#### Why does `Allocate(n int, retain bool)` return a slice of currencies?
 
-`Divide` unlike other operations, cannot be rounded off. If it is rounded, it would result in currency peddling.
+`Allocate` unlike other operations, cannot be rounded off. If it is rounded, it would result in currency _peddling_.
 
 e.g. ₹1/- (INR 1) is to be divided by 3. There are 2 options of dividing this by 3.
 
@@ -91,26 +91,34 @@ How to run?
 
 `$ go test -bench=.`
 
-Results when run on a MacBook Pro (13-inch, Early 2015), CPU: 2.7 GHz Intel Core i5, RAM: 8 GB 1867 MHz DDR3, Graphics: Intel Iris Graphics 6100 1536 MB
+Results when run on a MacBook Pro (13-inch, M3, 2024), CPU: Apple M3, RAM: 24 GB
 
 ```
-BenchmarkNew-4                    	20000000	        67.3 ns/op
-BenchmarkNewFractional-4          	20000000	        65.9 ns/op
-BenchmarkParseFloat64-4           	20000000	        87.4 ns/op
-BenchmarkParseString-4            	 3000000	       544 ns/op
-BenchmarkString-4                 	10000000	       211 ns/op
-BenchmarkStringNoPrefix-4         	10000000	       164 ns/op
-BenchmarkFloat64-4                	2000000000	         0.34 ns/op
-BenchmarkFractionalTotal-4        	2000000000	         0.33 ns/op
-BenchmarkUpdateWithFractional-4   	100000000	        10.3 ns/op
-BenchmarkAdd-4                    	100000000	        20.8 ns/op
-BenchmarkAddInt-4                 	100000000	        18.9 ns/op
-BenchmarkSubtract-4               	100000000	        21.2 ns/op
-BenchmarkSubtractInt-4            	100000000	        18.3 ns/op
-BenchmarkMultiply-4               	100000000	        16.2 ns/op
-BenchmarkMultiplyFloat64-4        	50000000	        30.1 ns/op
-BenchmarkPercent-4                	20000000	        67.1 ns/op
-BenchmarkDivide-4                 	10000000	       155 ns/op
+go version go1.23.1 darwin/arm64
+github.com/naughtygopher/currency [allocate]$ go test -bench .
+goos: darwin
+goarch: arm64
+pkg: github.com/naughtygopher/currency/v2
+cpu: Apple M3
+BenchmarkNew-8                    	55541650	        21.68 ns/op
+BenchmarkNewFractional-8          	58322852	        21.69 ns/op
+BenchmarkParseFloat64-8           	47724391	        25.72 ns/op
+BenchmarkParseString-8            	 6650085	       182.2 ns/op
+BenchmarkString-8                 	20838006	        58.65 ns/op
+BenchmarkStringNoPrefix-8         	30418314	        39.87 ns/op
+BenchmarkFloat64-8                	1000000000	         0.2722 ns/op
+BenchmarkFractionalTotal-8        	1000000000	         0.2697 ns/op
+BenchmarkUpdateWithFractional-8   	1000000000	         1.068 ns/op
+BenchmarkAdd-8                    	190538139	         6.245 ns/op
+BenchmarkAddInt-8                 	230544486	         5.690 ns/op
+BenchmarkSubtract-8               	185860339	         6.537 ns/op
+BenchmarkSubtractInt-8            	217542852	         5.571 ns/op
+BenchmarkMultiply-8               	282455095	         4.335 ns/op
+BenchmarkMultiplyFloat64-8        	84543258	        13.13 ns/op
+BenchmarkPercent-8                	52612252	        21.28 ns/op
+BenchmarkAllocate-8               	35645416	        34.41 ns/op
+PASS
+ok  	github.com/naughtygopher/currency/v2	23.125s
 ```
 
 ## References
